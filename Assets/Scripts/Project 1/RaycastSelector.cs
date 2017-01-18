@@ -5,18 +5,16 @@ public class RaycastSelector : MonoBehaviour {
 
     public Text text;
 
-    public GameObject selected;
-    public RaycastHit hit;
-    public Ray ray;
+    private GameObject selected;
+    private RaycastHit hit;
+    private Ray ray;
 
   //  private Camera camera;
 
     
 	// Use this for initialization
 	void Start () {
-      //Cursor.lockState = CursorLockMode.
-    //    camera = Camera.main;
-        
+
 	}
 	
 	// Update is called once per frame
