@@ -20,7 +20,7 @@ namespace UnityStandardAssets.Utility
         public float dampingTime = 0.2f;
         public bool autoZeroVerticalOnMobile = true;
         public bool autoZeroHorizontalOnMobile = false;
-        public bool relative = true;
+        public bool relative = false;
         
         
         private Vector3 m_TargetAngles;

@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Brick : MonoBehaviour {
+[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(Rigidbody))]
+public class Brick : Interactable {
 
    
     public BrickSpawner spawner;
@@ -13,27 +15,56 @@ public class Brick : MonoBehaviour {
     public Vector3 defaultPosition;
     [HideInInspector]
     public Quaternion defaultRotation;
-    private bool HasBeingHit;
+    private bool HitByLaser;
+
+    public MeshRenderer r;
+    public BoxCollider bc;
+    public Rigidbody rb;
 	// Use this for initialization
 	void Start () {
-        HasBeingHit = false;
+        HitByLaser = false;
+        r = GetComponent<MeshRenderer>();
+        bc = GetComponent<BoxCollider>();
+        rb = GetComponent<Rigidbody>();
 	}
 	
 
     public void reset()
     {
-        if (HasBeingHit)
+
+       this.transform.position = defaultPosition;
+       this.transform.rotation = defaultRotation;
+        if (HitByLaser)
         {
-            string s = "Resetting brick in row " + rowNumber + " position " + positionInRow;
-            Debug.Log(s);
-            this.transform.position = defaultPosition;
-            this.transform.rotation = defaultRotation;
+            HitByLaser = false;
+            r.enabled = true;
+            bc.enabled = true;
+            rb.useGravity = true;
         }
+
     }
-   
-    public void OnCollisionEnter()
+   /*
+    public void OnCollisionEnter(Collision col)
     {
-        HasBeingHit = true;
+        
+        if(col.gameObject.tag == "laser")
+        {
+            
+
+        }
+        if(col.gameObject.tag == "cannonball")
+        {
+
+        }
+    }*/
+
+    public void RespondToLaserAttack()
+    {
+        this.transform.position = new Vector3(-999f, -999f);
+        HitByLaser = true;
+        r.enabled = false;
+        bc.enabled = false;
+        rb.useGravity = false;
     }
 
 }

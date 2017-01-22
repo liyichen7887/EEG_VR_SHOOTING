@@ -37,17 +37,6 @@ public class BrickSpawner : MonoBehaviour
     }
 
 
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.H))
-    //    {
-    //        Debug.Log("Resetting walls");
-    //        resetWall();
-
-    //    }
-
-    //}
-
     /// <summary>
     /// Spawn bricks using giving radius and numRows
     /// </summary>
@@ -73,7 +62,7 @@ public class BrickSpawner : MonoBehaviour
                 t.position = new Vector3(0f, 0f, radius);
                 t.RotateAround(Vector3.zero, Vector3.up, rotationOffset * j + additionalRotationOffset);
                 Vector3 brickNewPostion = t.position;
-                brickNewPostion.y += yOffset * i;
+                brickNewPostion.y += yOffset * i + 0.002f;
                 t.position = brickNewPostion;
 
                 //set member variables for future use
@@ -99,9 +88,19 @@ public class BrickSpawner : MonoBehaviour
     /// </summary>
     public void resetWall()
     {
-        foreach(Brick b in bricks)
+        foreach (Brick b in bricks)
+        {
+
+            b.rb.useGravity = false;
+            b.bc.enabled = false;
+          
+        }
+        foreach (Brick b in bricks)
         {
             b.reset();
+            b.rb.useGravity = true;
+            b.bc.enabled = true;
+
         }
     }
 
