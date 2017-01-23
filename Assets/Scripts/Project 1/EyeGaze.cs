@@ -21,8 +21,7 @@ public class EyeGaze : MonoBehaviour {
     public GameObject laserPrefab;
     public AudioClip laserSound;
     public GameObject cannonBallPrefab;
-    public Color defaultColor = new Color(0, 0, 0); //icon color
-
+    public Color defaultColor = Color.white;
     private AudioSource audioS;
     private RaycastHit hit;
     private Ray ray;
@@ -39,7 +38,7 @@ public class EyeGaze : MonoBehaviour {
 
          camT = Camera.main.transform;
         cannonballs = new List<GameObject>();
-        audioS = GetComponent<AudioSource>(); 
+        audioS = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -88,9 +87,9 @@ public class EyeGaze : MonoBehaviour {
         {
             totalTimeGazed += Time.deltaTime;
         }
-
-        float pctComplete = totalTimeGazed / TimeRequiredForAction;
+       float pctComplete = totalTimeGazed / TimeRequiredForAction;
         widget.fillAmount = pctComplete;
+       
 
         if (totalTimeGazed >= TimeRequiredForAction)
         {
@@ -115,13 +114,13 @@ public class EyeGaze : MonoBehaviour {
             }
             else if(fireMode == FireMode.Cannon)
             {
-                cannonIcon.color = new Color(255, 255, 255, 255);
+                cannonIcon.color = Color.white;
                 laserIcon.color = defaultColor;
             }
             else
             {
                 cannonIcon.color = defaultColor;
-                laserIcon.color = new Color(255, 255, 255, 255);
+                laserIcon.color = Color.white;
             }
             return;
         }
@@ -172,5 +171,5 @@ public class EyeGaze : MonoBehaviour {
 
 public enum FireMode
 {
-    None, Laser, Cannon
+    None, Laser, Cannon, Teleport
 }

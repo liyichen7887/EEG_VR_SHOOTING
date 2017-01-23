@@ -45,7 +45,7 @@ public class BrickSpawner : MonoBehaviour
 
         circumfence = Mathf.PI * 2.0f * radius;
         int bricksPerRow = (int)(circumfence / brickWidth);
-        Debug.Log("Bricks Per Row: " + bricksPerRow);
+       // Debug.Log("Bricks Per Row: " + bricksPerRow);
         float rotationOffset = 360.0f / (float)bricksPerRow;
         float yOffset = brickHeight;
 
