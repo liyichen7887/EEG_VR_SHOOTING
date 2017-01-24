@@ -14,17 +14,22 @@ public class EyeGaze : MonoBehaviour {
     public Text raycastResult;
 
     public Image widget;
+    public Image floorWidget;
     public Image laserIcon;
     public Image cannonIcon;
     public Image tpIcon;
 
     public FireMode fireMode = FireMode.None;
     public GameObject laserPrefab;
-    public AudioClip laserSound;
+    
     public Transform laserSpawnPoint;
-
     public GameObject cannonBallPrefab;
     public Color defaultColor = Color.white;
+
+    public AudioClip cannonSound;
+    public AudioClip laserSound;
+    public AudioClip teleportSound;
+    private Transform hitLocation;
     private AudioSource audioS;
     private RaycastHit hit;
     private Ray ray;
@@ -33,38 +38,44 @@ public class EyeGaze : MonoBehaviour {
     private Interactable focusedObject; //currently focus object
     private Transform camT;
     private List<GameObject> cannonballs;
+
+    private bool lastFrameFloorGazed;
+    private bool currentFrameFloorGazed;
+    private float timeGazedOnFloor;
+    private Vector3 hitPoint;
+
     // Use this for initialization
     void Start() {
         totalTimeGazed = 0.0f;
+        timeGazedOnFloor = 0.0f;
         cannonIcon.color = defaultColor;
         laserIcon.color = defaultColor;
-
+        tpIcon.color = defaultColor;
          camT = Camera.main.transform;
         cannonballs = new List<GameObject>();
         audioS = GetComponent<AudioSource>();
+
+        lastFrameFloorGazed = false;
+        currentFrameFloorGazed = false;
+
     }
 
     // Update is called once per frame
     void Update() {
         PerformRaycast();
         CheckFocus();
+
+        CheckFloorGazeForTP();
+
         previousFocus = focusedObject;
+        lastFrameFloorGazed = currentFrameFloorGazed;
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            /*  GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-
-              cube.transform.localScale = new Vector3(0.05f, .05f, .05f);
-              Rigidbody rb = cube.AddComponent<Rigidbody>() as Rigidbody;
-              rb.useGravity = false;
-              rb.AddForce(transform.forward * speed);*/
-
-            ShootLaser();
-
-
-
-
+             ShootLaser();
         }
+        
+
     }
 
 
@@ -74,29 +85,37 @@ public class EyeGaze : MonoBehaviour {
         Ray ray = new Ray(camT.position, camT.forward);
         if (Physics.Raycast(ray, out hit))
         {
-            Transform objectHit = hit.transform;
-            focusedObject = objectHit.GetComponent<Interactable>();
-            string objectName = objectHit.name;
-            raycastResult.text = "Raycast Result: " + objectName;
+            hitLocation = hit.transform;
+            focusedObject = hitLocation.GetComponent<Interactable>();
+            raycastResult.text = "Raycast: " + hitLocation.name;
+            hitPoint = hit.point;
+           // string s = "Point: " + hitPoint.x + "  " + hitPoint.y + "  " + hitPoint.z;
+           // raycastResult.text = s;
+            //check if user is gazing at the floor
+            if (hitLocation.GetComponent<Floor>())
+            {
+                currentFrameFloorGazed = true;
+            }
+            else
+            {
+                currentFrameFloorGazed = false;
+            }
+            
         }
         else
         {
-            raycastResult.text = "-------- ";
+            raycastResult.text = "Raycast: null" ;
             focusedObject = null;
+            hitLocation = null;
         }
     }
 
     void CheckFocus()
     {
 
-        if (!previousFocus && focusedObject)
-        {
-            totalTimeGazed += Time.deltaTime;
-        }
-        else if (!focusedObject)
+        if (!focusedObject || (!previousFocus && focusedObject))
         {
             totalTimeGazed = 0f;
-           
         }
         else if (previousFocus != focusedObject)
         {
@@ -106,15 +125,56 @@ public class EyeGaze : MonoBehaviour {
         {
             totalTimeGazed += Time.deltaTime;
         }
-       float pctComplete = totalTimeGazed / TimeRequiredForAction;
-        widget.fillAmount = pctComplete;
-       
+
+
+            
+
+        if ((fireMode == FireMode.None || fireMode == FireMode.Teleport) && ((!focusedObject) || (!(focusedObject.GetType() == typeof(SelectFireMode)))))
+        {
+            widget.fillAmount = 0.0f;
+        }
+        else
+        {
+            float pctComplete = totalTimeGazed / TimeRequiredForAction;
+            widget.fillAmount = pctComplete;
+        }
+
 
         if (totalTimeGazed >= TimeRequiredForAction)
         {
             performAction();
             totalTimeGazed = 0.0f;
         }
+    }
+
+
+    void CheckFloorGazeForTP()
+    {
+        if (fireMode != FireMode.Teleport)
+            return;
+
+        if (lastFrameFloorGazed && currentFrameFloorGazed)
+        {
+            timeGazedOnFloor += Time.deltaTime;
+        }
+        else
+        {
+            timeGazedOnFloor = 0.0f;
+        }
+        
+        float pctComplete = timeGazedOnFloor / TimeRequiredForAction;
+        floorWidget.fillAmount = pctComplete;
+
+
+        if (timeGazedOnFloor >= TimeRequiredForAction)
+        {
+            //perform tp here
+            Vector3 p = this.transform.position;
+            this.transform.position = new Vector3(hitPoint.x, p.y, hitPoint.z);
+            audioS.PlayOneShot(teleportSound);
+            timeGazedOnFloor = 0.0f;
+        }
+
 
     }
 
@@ -122,36 +182,51 @@ public class EyeGaze : MonoBehaviour {
 
     void performAction()
     {
-        
+
         if (focusedObject.GetType() == typeof(SelectFireMode))
         {
-            fireMode = (focusedObject as SelectFireMode).fireMode;
-            if(fireMode == FireMode.None)
+
+            SelectFireMode sfm = focusedObject as SelectFireMode;
+            fireMode = sfm.fireMode;
+            audioS.PlayOneShot(sfm.sound);
+            if (fireMode == FireMode.None)
             {
                 cannonIcon.color = defaultColor;
                 laserIcon.color = defaultColor;
+                tpIcon.color = defaultColor;
             }
-            else if(fireMode == FireMode.Cannon)
+            else if (fireMode == FireMode.Cannon)
             {
                 cannonIcon.color = Color.white;
                 laserIcon.color = defaultColor;
+                tpIcon.color = defaultColor;
             }
-            else
+            else if(fireMode == FireMode.Laser)
             {
                 cannonIcon.color = defaultColor;
                 laserIcon.color = Color.white;
+                tpIcon.color = defaultColor;
+            }
+            else if(fireMode == FireMode.Teleport)
+            {
+                cannonIcon.color = defaultColor;
+                laserIcon.color = defaultColor;
+                tpIcon.color = Color.white;
             }
             return;
         }
-        if(fireMode == FireMode.Laser)
+        else if (focusedObject.GetType() == typeof(Brick))
         {
-            ShootLaser();
+            if (fireMode == FireMode.Laser)
+            {
+                ShootLaser();
+            }
+            else if (fireMode == FireMode.Cannon)
+            {
+                FireCannonBall();
+            }
+
         }
-        else if(fireMode == FireMode.Cannon)
-        {
-            FireCannonBall();
-        }
-        
         
     }
 
@@ -175,7 +250,7 @@ public class EyeGaze : MonoBehaviour {
         cannonballs.Add(cannonballGO);
         cannonballGO.transform.position = camT.position;
         cannonballGO.GetComponent<Rigidbody>().AddForce(camT.forward*cannonballSpeed);
-
+        audioS.PlayOneShot(cannonSound);
     }
 
 

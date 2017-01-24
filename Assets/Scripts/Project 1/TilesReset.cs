@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(AudioSource))]
 public class TilesReset : MonoBehaviour {
 
     public Text t;
@@ -8,8 +9,9 @@ public class TilesReset : MonoBehaviour {
     public Image widgetImage;
     public EyeGaze eg;
     public BrickSpawner spawner;
+    public AudioClip resetSound;
 
-
+    private AudioSource audioS;
     private float elapsedTime;
 	// Use this for initialization
 	void Start () {
@@ -50,7 +52,8 @@ public class TilesReset : MonoBehaviour {
 
     public void resetEverything()
     {
-        
+
+        audioS.PlayOneShot(resetSound);
         elapsedTime = 0.0f;
         eg.ResetCannonBalls();
         spawner.resetWall();
