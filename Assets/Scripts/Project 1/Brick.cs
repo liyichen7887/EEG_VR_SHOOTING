@@ -43,20 +43,16 @@ public class Brick : Interactable {
         }
 
     }
-   /*
+   
     public void OnCollisionEnter(Collision col)
     {
         
-        if(col.gameObject.tag == "laser")
-        {
-            
-
-        }
+     
         if(col.gameObject.tag == "cannonball")
         {
 
         }
-    }*/
+    }
 
     public void RespondToLaserAttack()
     {

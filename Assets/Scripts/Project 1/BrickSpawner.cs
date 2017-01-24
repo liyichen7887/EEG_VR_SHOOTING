@@ -6,7 +6,6 @@ public class BrickSpawner : MonoBehaviour
 {
     public GameObject brickPrefab;
     public int numRows = 10;
-    public int bricksPerRow = 5;
     public float radius = 10.0f;
 
 

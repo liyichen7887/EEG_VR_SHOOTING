@@ -16,10 +16,13 @@ public class EyeGaze : MonoBehaviour {
     public Image widget;
     public Image laserIcon;
     public Image cannonIcon;
+    public Image tpIcon;
 
     public FireMode fireMode = FireMode.None;
     public GameObject laserPrefab;
     public AudioClip laserSound;
+    public Transform laserSpawnPoint;
+
     public GameObject cannonBallPrefab;
     public Color defaultColor = Color.white;
     private AudioSource audioS;
@@ -46,6 +49,22 @@ public class EyeGaze : MonoBehaviour {
         PerformRaycast();
         CheckFocus();
         previousFocus = focusedObject;
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            /*  GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+              cube.transform.localScale = new Vector3(0.05f, .05f, .05f);
+              Rigidbody rb = cube.AddComponent<Rigidbody>() as Rigidbody;
+              rb.useGravity = false;
+              rb.AddForce(transform.forward * speed);*/
+
+            ShootLaser();
+
+
+
+
+        }
     }
 
 
@@ -133,15 +152,18 @@ public class EyeGaze : MonoBehaviour {
             FireCannonBall();
         }
         
+        
     }
 
 
     void ShootLaser()
     {
 
-        //   GameObject laserGO = Instantiate(laserPrefab) as GameObject;
-        //    laserGO.transform.position = camT.position;
-        //   laserGO.GetComponent<Rigidbody>().AddForce(camT.forward*laserSpeed);
+        GameObject laserGO = Instantiate(laserPrefab) as GameObject;
+        laserGO.transform.parent = laserSpawnPoint;
+        laserGO.transform.position = laserSpawnPoint.position;
+        laserGO.transform.rotation = laserSpawnPoint.rotation;
+        laserGO.GetComponent<Rigidbody>().AddForce(laserSpawnPoint.forward*laserSpeed);
         audioS.PlayOneShot(laserSound);
         (focusedObject as Brick).RespondToLaserAttack();
     }

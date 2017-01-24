@@ -19,9 +19,9 @@ public class TilesReset : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         float x = this.transform.localEulerAngles.x;
-        float y = this.transform.localEulerAngles.y;
-        float z = this.transform.localEulerAngles.z;
-        string a = x + "  " + y   + "      T: " + elapsedTime;
+       // float y = this.transform.localEulerAngles.y;
+      //  float z = this.transform.localEulerAngles.z;
+       // string a = x + "  " + y   + "      T: " + elapsedTime;
         
 
         if(x > 270.0f && x < 320.0f )
@@ -50,8 +50,11 @@ public class TilesReset : MonoBehaviour {
 
     public void resetEverything()
     {
+        
         elapsedTime = 0.0f;
         eg.ResetCannonBalls();
+        spawner.resetWall();
+
         spawner.resetWall();
     }
 
