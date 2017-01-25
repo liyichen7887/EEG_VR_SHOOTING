@@ -44,7 +44,7 @@ public class EyeGaze : MonoBehaviour {
     private bool currentFrameFloorGazed;
     private float timeGazedOnFloor;
     private Vector3 hitPoint;
-    
+    private Vector3 cameraDefaultPosition;
 
     // Use this for initialization
     void Start() {
@@ -59,6 +59,7 @@ public class EyeGaze : MonoBehaviour {
 
         lastFrameFloorGazed = false;
         currentFrameFloorGazed = false;
+        cameraDefaultPosition = transformForTP.position;
 
     }
 
@@ -89,7 +90,7 @@ public class EyeGaze : MonoBehaviour {
         {
             hitLocation = hit.transform;
             focusedObject = hitLocation.GetComponent<Interactable>();
-            raycastResult.text = "Raycast: " + hitLocation.name;
+         //   raycastResult.text = "Raycast: " + hitLocation.name;
             hitPoint = hit.point;
            // string s = "Point: " + hitPoint.x + "  " + hitPoint.y + "  " + hitPoint.z;
            // raycastResult.text = s;
@@ -109,6 +110,7 @@ public class EyeGaze : MonoBehaviour {
             raycastResult.text = "Raycast: null" ;
             focusedObject = null;
             hitLocation = null;
+            currentFrameFloorGazed = false;
         }
     }
 
@@ -263,6 +265,7 @@ public class EyeGaze : MonoBehaviour {
             GameObject.Destroy(g);
         }
         cannonballs.Clear();
+        transformForTP.position = cameraDefaultPosition;
     }
 
 
