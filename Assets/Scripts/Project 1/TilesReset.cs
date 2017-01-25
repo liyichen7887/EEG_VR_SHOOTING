@@ -21,10 +21,10 @@ public class TilesReset : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         float x = this.transform.localEulerAngles.x;
-        float y = this.transform.localEulerAngles.y;
+      //  float y = this.transform.localEulerAngles.y;
       //  float z = this.transform.localEulerAngles.z;
-        string a = x + "  " + y   + "      T: " + elapsedTime;
-        t.text = a;
+       // string a = x + "  " + y   + "      T: " + elapsedTime;
+      //  t.text = a;
 
         if (x > 280.0f && x < 300.0f )
         {
