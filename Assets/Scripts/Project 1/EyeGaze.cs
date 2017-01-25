@@ -5,6 +5,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Camera))]
 public class EyeGaze : MonoBehaviour {
 
+    public Transform transformForTP;
 
     public float laserSpeed = 100.0f;
     public float cannonballSpeed = 200.0f;
@@ -43,6 +44,7 @@ public class EyeGaze : MonoBehaviour {
     private bool currentFrameFloorGazed;
     private float timeGazedOnFloor;
     private Vector3 hitPoint;
+    
 
     // Use this for initialization
     void Start() {
@@ -170,7 +172,7 @@ public class EyeGaze : MonoBehaviour {
         {
             //perform tp here
             Vector3 p = this.transform.position;
-            this.transform.position = new Vector3(hitPoint.x, p.y, hitPoint.z);
+            transformForTP.position = new Vector3(hitPoint.x, p.y, hitPoint.z);
             audioS.PlayOneShot(teleportSound);
             timeGazedOnFloor = 0.0f;
         }
