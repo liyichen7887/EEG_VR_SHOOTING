@@ -188,6 +188,29 @@ ModelImporter:
     4300040: Mesh21
     4300042: Mesh22
     4300044: Mesh23
+    6400000: Mesh1
+    6400002: Mesh10
+    6400004: Mesh11
+    6400006: Mesh12
+    6400008: Mesh13
+    6400010: Mesh14
+    6400012: Mesh15
+    6400014: Mesh16
+    6400016: Mesh17
+    6400018: Mesh18
+    6400020: Mesh19
+    6400022: Mesh2
+    6400024: Mesh20
+    6400026: Mesh21
+    6400028: Mesh22
+    6400030: Mesh23
+    6400032: Mesh3
+    6400034: Mesh4
+    6400036: Mesh5
+    6400038: Mesh6
+    6400040: Mesh7
+    6400042: Mesh8
+    6400044: Mesh9
   materials:
     importMaterials: 1
     materialName: 0
