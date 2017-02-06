@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Floor : Interactable {
+public class Floor : MonoBehaviour {
 
 	
 }

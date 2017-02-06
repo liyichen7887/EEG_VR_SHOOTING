@@ -9,6 +9,7 @@ public enum SpawnMode
 
 
 public class ObjectSpawner : MonoBehaviour {
+    public SelectObject so;
 
     public GameObject[] prefabs;
     public GameObject[] demoGameObject;
@@ -33,6 +34,9 @@ public class ObjectSpawner : MonoBehaviour {
 
     void Update()
     {
+        if (so.activeSelectionMode != SelectionMode.Selection)
+            return;
+
         if (Input.GetKeyDown(NextItem) || OVRInput.Get(NextItemTouch))
         {
             SelectNextItem();

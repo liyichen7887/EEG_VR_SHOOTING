@@ -33,7 +33,6 @@ public class EyeGaze : MonoBehaviour {
     private Transform hitLocation;
     private AudioSource audioS;
     private RaycastHit hit;
-    private Ray ray;
     private float totalTimeGazed;
     private Interactable previousFocus; //gameObject from result of raycast from last frame;
     private Interactable focusedObject; //currently focus object
