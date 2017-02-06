@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SelectObject : MonoBehaviour {
+    public static SelectObject Instance;
 
     public SelectionMode activeSelectionMode = SelectionMode.Selection;
     public Teleport tp;
@@ -15,8 +16,6 @@ public class SelectObject : MonoBehaviour {
     public AudioClip letGoSound;
 
     [Header("UI Fields")]
-    public Text raycastResult;
-   
     public Text T_selectionMode;
     public Text T_manipulateMode;
     public Text T_teleportMode;
@@ -35,13 +34,13 @@ public class SelectObject : MonoBehaviour {
     public OVRInput.Button selectKeyTouch = OVRInput.Button.Four;
 
     //additonal variables for keeping track of selection states
-    private bool HasSelectedObjects = false;
+   // private bool HasSelectedObjects = false;
 
     //used for raycasting
     private RaycastHit hit;
     private Transform camT;
     private Transform hitTransform;
-    private Vector3 hitPoint;
+   // private Vector3 hitPoint;
     private SelectableObjects focusedObject;
 
     
@@ -60,29 +59,24 @@ public class SelectObject : MonoBehaviour {
 
 
     //variables for Raycast Manipulation
-    private bool Manipulating = false;
-    private Transform origPos;
+   // private bool Manipulating = false;
+   // private Transform origPos;
 
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
+        Instance = this;
         camT = Camera.main.transform;
         UpdateUI();
         selectedObjects = new List<SelectableObjects>();
         tp.enabled = false;
+
     }
 	
 	// Update is called once per frame
 	void Update () {
 
         PerformRaycast(); //perform raycast regardless of mode
-
-    /*    if (HasSelectedObjects && activeSelectionMode == SelectionMode.Manipulate)
-        {
-
-        }
-        */
-
         CheckForKeyInputs();
 	}
 
@@ -94,13 +88,10 @@ public class SelectObject : MonoBehaviour {
         {
             hitTransform = hit.transform;
             focusedObject = hitTransform.GetComponent<SelectableObjects>();
-            hitPoint = hit.point;
-          //  raycastResult.text = "Raycast: " + hitTransform.name;
-
+           // hitPoint = hit.point;
         }
         else
         {
-         //   raycastResult.text = "Raycast: null";
             focusedObject = null;
             hitTransform = null;
         }

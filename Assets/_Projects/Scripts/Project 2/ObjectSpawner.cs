@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SpawnMode
-{
 
-}
 
 
 public class ObjectSpawner : MonoBehaviour {
-    public SelectObject so;
 
+    public static ObjectSpawner Instance;
+    public SelectObject so;
     public GameObject[] prefabs;
     public GameObject[] demoGameObject;
     public Transform SpawnPoint;
@@ -21,12 +19,16 @@ public class ObjectSpawner : MonoBehaviour {
     public KeyCode spawnKey = KeyCode.DownArrow;
     public OVRInput.Button spawnKeyTouch = OVRInput.Button.Three;
 
+
+    //[HideInInspector]
+    public List<GameObject> spawnedItems;
     private int currentSelection;
-    private List<GameObject> spawnedItems;
     private Vector3 spawnPosition;
-    void Start()
+
+    void Awake()
     {
         spawnedItems = new List<GameObject>();
+        Instance = this;
         currentSelection = 0;
         spawnPosition = SpawnPoint.position;
     }
@@ -68,7 +70,36 @@ public class ObjectSpawner : MonoBehaviour {
     {
         GameObject obj = Instantiate(prefabs[currentSelection]) as GameObject;
         obj.transform.position = new Vector3(spawnPosition.x, obj.transform.position.y, spawnPosition.z);
-        spawnedItems.Add(obj);
+      //  spawnedItems.Add(obj);  //added in the start function in SelectableObject.cs
     }
+
+    
+    public void Spawn(string type, Vector3 pos, Quaternion rotation)
+    {
+        switch (type)
+        {
+            case "Desk":
+                Instantiate(prefabs[0], pos, rotation);
+                break;
+            case "Chair":
+                Instantiate(prefabs[1], pos, rotation);
+                break;
+            case "Cabinet":
+                Instantiate(prefabs[2], pos, rotation);
+                break;
+            case "Locker":
+                Instantiate(prefabs[3], pos, rotation);
+                break;
+            case "3DTV":
+                Instantiate(prefabs[4], pos, rotation);
+                break;
+            case "Whiteboard":
+                Instantiate(prefabs[5], pos, rotation);
+                break;
+        }
+
+    }
+
+
 }
 

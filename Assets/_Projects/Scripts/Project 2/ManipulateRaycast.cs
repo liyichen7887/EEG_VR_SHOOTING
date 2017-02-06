@@ -21,7 +21,7 @@ public class ManipulateRaycast : MonoBehaviour
     private Transform hitLocation;
     private Floor floor;
     private Vector3 hitPoint;
-    private SelectableObjects sObj;
+ //   private SelectableObjects sObj;
 
     public Transform initialTransform;
     private bool Manipulating = false;
@@ -55,7 +55,7 @@ public class ManipulateRaycast : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 20.0f))
         {
             hitLocation = hit.transform;
-            sObj = hitLocation.GetComponent<SelectableObjects>();
+           // sObj = hitLocation.GetComponent<SelectableObjects>();
             hitPoint = hit.point;
 
             lr.SetPosition(0, RaycastObject.position);
@@ -67,7 +67,7 @@ public class ManipulateRaycast : MonoBehaviour
         {
             t.text = "Result: -- ";
             hitLocation = null;
-            sObj = null;
+           // sObj = null;
             lr.SetPosition(0, Vector3.zero);
             lr.SetPosition(1, Vector3.zero);
         }
@@ -95,8 +95,6 @@ public class ManipulateRaycast : MonoBehaviour
                 so.PivotTransform.position = new Vector3(hitPoint.x, so.PivotTransform.position.y, hitPoint.z);
                 audioSource.PlayOneShot(clickSound);
                 so.SetCollidersActive(true);
-                //  so.ManipulationDone();
-
             }
             else
             {
@@ -104,13 +102,9 @@ public class ManipulateRaycast : MonoBehaviour
                 initialTransform = so.PivotTransform;
                 audioSource.PlayOneShot(clickSound);
                 so.SetCollidersActive(false);
-               /* if (sObj)
-                {
-                    so.SetPivotToCurrentlyPointedObject(sObj.transform);
-                }*/
             }
         }
-
+        /*
         if (Input.GetKeyDown(cancelKey) || OVRInput.Get(cancelKeyTouch))
         {
             if (Manipulating)
@@ -118,12 +112,8 @@ public class ManipulateRaycast : MonoBehaviour
                 Manipulating = false;
                 so.PivotTransform = initialTransform;
             }
-        }
+        }*/
     }
 
-    private void TP()
-    {
-       // ObjectToTP.position = new Vector3(hitPoint.x, ObjectToTP.position.y, hitPoint.z);
-       // audioSource.PlayOneShot(teleportSound);
-    }
+
 }

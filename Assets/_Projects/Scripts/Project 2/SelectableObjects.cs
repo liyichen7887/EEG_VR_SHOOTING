@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectableObjects : Interactable {
-
+    public string Objectname;
     public float yValue = 1.0f;
     public bool selected = false;
     public MeshRenderer[] m_renderers;
@@ -18,6 +18,7 @@ public class SelectableObjects : Interactable {
         transform.position = pos;
         m_renderers = GetComponentsInChildren<MeshRenderer>();
         col = GetComponent<Collider>();
+        ObjectSpawner.Instance.spawnedItems.Add(this.gameObject);
     }
 	
 
