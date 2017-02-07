@@ -3,10 +3,11 @@ using UnityEngine.UI;
 
 public class TouchPoseTest : MonoBehaviour {
 
-    public OvrAvatar ava;
-    public OvrAvatarLocalDriver avaDriver;
+    
     public Text debugText;
-    public OvrAvatarDriver.PoseFrame pose;
+    public OVRInput.Controller c;
+    public float f;
+    public bool b;
     // Use this for initialization
     void Start () {
 		
@@ -14,7 +15,12 @@ public class TouchPoseTest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        avaDriver.GetCurrentPose( out pose);
+
+       // f = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger);
+        f = OVRInput.Get(OVRInput.RawAxis1D.LIndexTrigger);
+
+        b=  OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
+        debugText.text = " " + f;
 
     }
 }
