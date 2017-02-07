@@ -15,9 +15,10 @@ public class SelectObject : MonoBehaviour {
     public AudioClip selectSound;
     public AudioClip letGoSound;
 
+
     [Header("UI Fields")]
+   // public Text debug;
     public Text T_selectionMode;
-    public Text T_manipulateMode;
     public Text T_teleportMode;
     public Text T_raycastMode;
     public Text T_freeformMode;
@@ -102,9 +103,62 @@ public class SelectObject : MonoBehaviour {
 
     }
 
+
+    public bool canGetThumbstick = true;
+    private float axisThreshold = 0.75f;
+    private void HandleModeChangeInput()
+    {
+        Vector2 r = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+        //debug.text = "x: " + r.x + "  y:" + r.y;
+        if (canGetThumbstick)
+        {
+            if (Mathf.Abs(r.x) > axisThreshold  )
+            {
+                canGetThumbstick = false;
+                if(r.x < 0f)
+                {
+                    // thumstick: left
+                    activeSelectionMode = SelectionMode.Manipulate_Raycast;
+                }
+                else
+                {
+                    //thumstick:right
+                    activeSelectionMode = SelectionMode.Manipulate_TBD;
+                }
+                UpdateUI();
+            }
+            else if (Mathf.Abs(r.y) > axisThreshold)
+            {
+                canGetThumbstick = false;
+                if (r.y > 0f)
+                {
+                    // thumstick: top
+                    activeSelectionMode = SelectionMode.Selection;
+                }
+                else
+                {
+                    //thumstick: bottom
+                    activeSelectionMode = SelectionMode.Teleport;
+                }
+                UpdateUI();
+            }
+        }
+        else
+        {
+            //wait for reset here
+            if(r.x == 0f && r.y == 0f)
+            {
+                canGetThumbstick = true;
+            }
+        }
+
+    }
+
+
     private void CheckForKeyInputs()
     {
-        if (Input.GetKeyDown(switchModeKey) || OVRInput.Get(switchModeTouch))
+        HandleModeChangeInput();
+        if (Input.GetKeyDown(switchModeKey) || OVRInput.GetDown(switchModeTouch))
         {
             if (activeSelectionMode == SelectionMode.Selection)
             {
@@ -202,7 +256,6 @@ public class SelectObject : MonoBehaviour {
         if (activeSelectionMode == SelectionMode.Selection)
         {
             T_selectionMode.color = S_SelectedColor;
-            T_manipulateMode.color = S_DefaultColor;
             T_teleportMode.color = S_DefaultColor;
             T_raycastMode.color = S_DefaultColor;
             T_freeformMode.color = S_DefaultColor;
@@ -211,7 +264,6 @@ public class SelectObject : MonoBehaviour {
         {
             T_teleportMode.color = S_DefaultColor;
             T_selectionMode.color = S_DefaultColor;
-            T_manipulateMode.color = S_SelectedColor;
             T_raycastMode.color = S_SelectedColor;
             T_freeformMode.color = S_DefaultColor;
         }
@@ -219,7 +271,6 @@ public class SelectObject : MonoBehaviour {
         {
             T_teleportMode.color = S_DefaultColor;
             T_selectionMode.color = S_DefaultColor;
-            T_manipulateMode.color = S_SelectedColor;
             T_raycastMode.color = S_DefaultColor;
             T_freeformMode.color = S_SelectedColor;
         }
@@ -227,7 +278,6 @@ public class SelectObject : MonoBehaviour {
         {
             T_teleportMode.color = S_SelectedColor;
             T_selectionMode.color = S_DefaultColor;
-            T_manipulateMode.color = S_DefaultColor;
             T_raycastMode.color = S_DefaultColor;
             T_freeformMode.color = S_DefaultColor;
         }

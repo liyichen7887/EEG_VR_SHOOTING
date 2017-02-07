@@ -3,8 +3,10 @@ using System.Collections;
 
 public class TestingOnly : MonoBehaviour {
     public float speed = 200f;
-	// Use this for initialization
-	void Start () {
+
+  //  OvrAvatarDriver.ControllerPose cp;
+    // Use this for initialization
+    void Start () {
       //  tr = GetComponent<TilesReset>();
 
 	}
