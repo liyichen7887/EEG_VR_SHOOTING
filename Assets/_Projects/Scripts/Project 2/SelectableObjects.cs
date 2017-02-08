@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class SelectableObjects : Interactable {
     public string Objectname;
+    public bool alignWithWall = false;
     public float yValue = 1.0f;
-    public bool selected = false;
-    public MeshRenderer[] m_renderers;
     public Color selectionColor = new Color(0f, 1f, 1f, 1f);
     public Color PivotColor = Color.red;
+    [HideInInspector]
+    public bool selected = false;
+    [HideInInspector]
     public Collider col;
+    private MeshRenderer[] m_renderers;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         Vector3 pos = transform.position;
         pos.y = yValue;
         transform.position = pos;

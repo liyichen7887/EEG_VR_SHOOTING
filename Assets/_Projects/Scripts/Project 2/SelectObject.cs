@@ -56,7 +56,11 @@ public class SelectObject : MonoBehaviour {
     private bool canGetThumbstick = true;
     private float axisThreshold = 0.75f;
 
-    // Use this for initialization
+
+    //variables for handling whiteboard interaction with wall
+    private bool pivotIsWhiteBoard = false;
+
+
     void Awake () {
         Instance = this;
         UpdateUI();
@@ -67,51 +71,46 @@ public class SelectObject : MonoBehaviour {
 	void Update () {
 
         PerformRaycast(); //perform raycast regardless of mode
+        CheckPointingAndRenderLine();
         CheckForKeyInputs();
 	}
 
-    public bool pointing;
 
     private void PerformRaycast()
     {
         // Debug.DrawRay(camT.position, camT.forward * 15, Color.black);
-        pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
-        Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
        
-
+        Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
         if (Physics.Raycast(ray, out hit))
         {
             hitTransform = hit.transform;
             focusedObject = hitTransform.GetComponent<SelectableObjects>();
             hitPoint = hit.point;
-
-           
-
         }
         else
         {
             focusedObject = null;
             hitTransform = null;
-            
         }
 
+    }
+
+    private void CheckPointingAndRenderLine()
+    {
+        bool pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
         if (pointing)
         {
             lr.SetPosition(0, RaycastObject.position);
-            lr.SetPosition(1, RaycastObject.position + RaycastObject.right *15);
+            lr.SetPosition(1, RaycastObject.position + RaycastObject.right * 15);
         }
         else
         {
             lr.SetPosition(0, Vector3.zero);
             lr.SetPosition(1, Vector3.zero);
         }
-    }
-
-    private void ManipulateObjects()
-    {
 
     }
- 
+
     private void HandleModeChangeInput()
     {
         Vector2 r = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
@@ -175,15 +174,14 @@ public class SelectObject : MonoBehaviour {
         }
     }
 
-
+    //meat and bread of selecting and deselecting objects
     private void HandleSelection()
     {
         if (!focusedObject)
-        {
             return;
-        }
 
-        if (!focusedObject.selected)
+
+        if (!focusedObject.selected) //if focused object is already in a group
         {
             selectedObjects.Add(focusedObject);
             if(selectedObjects.Count == 1)
@@ -198,7 +196,7 @@ public class SelectObject : MonoBehaviour {
                 focusedObject.Start_Interaction(false);
             }
         }
-        else
+        else //if focused object is already not in a group
         {
             selectedObjects.Remove(focusedObject);
             focusedObject.Start_Interaction();
@@ -224,7 +222,6 @@ public class SelectObject : MonoBehaviour {
         }
         
     }
-
 
     private void UpdateUI()
     {
