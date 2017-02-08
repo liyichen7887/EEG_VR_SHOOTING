@@ -26,8 +26,6 @@ public class TouchTransformTest : MonoBehaviour {
         obj.transform.rotation = n;
         */
         Vector3 c = OVRInput.GetLocalControllerRotation(controller).eulerAngles;
-        string s = "x" + c.x + "   y" + c.y + "  z" + c.z;
-        t1.text = s;
         Vector3 objR = obj.transform.rotation.eulerAngles;
         Vector3 nEuler = new Vector3(objR.x, c.y, objR.z);
         Quaternion q = Quaternion.Euler(nEuler);
