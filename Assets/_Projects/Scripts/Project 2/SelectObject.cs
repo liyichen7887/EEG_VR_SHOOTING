@@ -9,6 +9,8 @@ public class SelectObject : MonoBehaviour {
     public SelectionMode activeSelectionMode = SelectionMode.Selection;
     public Teleport tp;
     public ManipulateRaycast mr;
+    public Transform RaycastObject;
+    public LineRenderer lr;
 
     [Header("Audio Fields")]
     public AudioSource audioS;
@@ -26,23 +28,7 @@ public class SelectObject : MonoBehaviour {
     public Color S_SelectedColor = Color. green;
 
     [Header("Key Bindings")]
-    public KeyCode switchModeKey = KeyCode.UpArrow;
-    public OVRInput.Button switchModeTouch = OVRInput.Button.Three;
-    public KeyCode ManipulateActionKey = KeyCode.Mouse0;
-    public OVRInput.Button ManipulateActionKeyTouch = OVRInput.Button.Four;
-
-    public KeyCode selectKey = KeyCode.Mouse0;
-    public OVRInput.Button selectKeyTouch = OVRInput.Button.Four;
-
-    //additonal variables for keeping track of selection states
-   // private bool HasSelectedObjects = false;
-
-    //used for raycasting
-    private RaycastHit hit;
-    private Transform camT;
-    private Transform hitTransform;
-   // private Vector3 hitPoint;
-    private SelectableObjects focusedObject;
+    public OVRInput.Button selectKeyTouch = OVRInput.Button.Two;
 
     
     //used for handling selection
@@ -59,53 +45,72 @@ public class SelectObject : MonoBehaviour {
      */
 
 
-    //variables for Raycast Manipulation
-   // private bool Manipulating = false;
-   // private Transform origPos;
+    //used for raycasting
+    private RaycastHit hit;
+    private Transform hitTransform;
+     private Vector3 hitPoint;
+    private SelectableObjects focusedObject;
 
 
-    // Use this for initialization
+    //used for mode change
+    private bool canGetThumbstick = true;
+    private float axisThreshold = 0.75f;
+
+
+    //variables for handling whiteboard interaction with wall
+    private bool pivotIsWhiteBoard = false;
+
+
     void Awake () {
         Instance = this;
-        camT = Camera.main.transform;
         UpdateUI();
         selectedObjects = new List<SelectableObjects>();
-        tp.enabled = false;
-
     }
 	
 	// Update is called once per frame
 	void Update () {
 
         PerformRaycast(); //perform raycast regardless of mode
+        CheckPointingAndRenderLine();
         CheckForKeyInputs();
 	}
 
+
     private void PerformRaycast()
     {
-        Debug.DrawRay(camT.position, camT.forward * 15, Color.red);
-        Ray ray = new Ray(camT.position, camT.forward);
+        // Debug.DrawRay(camT.position, camT.forward * 15, Color.black);
+       
+        Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
         if (Physics.Raycast(ray, out hit))
         {
             hitTransform = hit.transform;
             focusedObject = hitTransform.GetComponent<SelectableObjects>();
-           // hitPoint = hit.point;
+            hitPoint = hit.point;
         }
         else
         {
             focusedObject = null;
             hitTransform = null;
         }
+
     }
 
-    private void ManipulateObjects()
+    private void CheckPointingAndRenderLine()
     {
+        bool pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
+        if (pointing)
+        {
+            lr.SetPosition(0, RaycastObject.position);
+            lr.SetPosition(1, RaycastObject.position + RaycastObject.right * 15);
+        }
+        else
+        {
+            lr.SetPosition(0, Vector3.zero);
+            lr.SetPosition(1, Vector3.zero);
+        }
 
     }
 
-
-    public bool canGetThumbstick = true;
-    private float axisThreshold = 0.75f;
     private void HandleModeChangeInput()
     {
         Vector2 r = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
@@ -126,6 +131,7 @@ public class SelectObject : MonoBehaviour {
                     activeSelectionMode = SelectionMode.Manipulate_TBD;
                 }
                 UpdateUI();
+                SetCollidersActive(true);
             }
             else if (Mathf.Abs(r.y) > axisThreshold)
             {
@@ -141,6 +147,7 @@ public class SelectObject : MonoBehaviour {
                     activeSelectionMode = SelectionMode.Teleport;
                 }
                 UpdateUI();
+                SetCollidersActive(true);
             }
         }
         else
@@ -154,61 +161,27 @@ public class SelectObject : MonoBehaviour {
 
     }
 
-
     private void CheckForKeyInputs()
     {
         HandleModeChangeInput();
-        if (Input.GetKeyDown(switchModeKey) || OVRInput.GetDown(switchModeTouch))
+
+        if (activeSelectionMode != SelectionMode.Selection)
+            return;
+
+        if (OVRInput.GetUp(selectKeyTouch))
         {
-            if (activeSelectionMode == SelectionMode.Selection)
-            {
-                activeSelectionMode = SelectionMode.Manipulate_Raycast;
-                mr.enabled = true;
-            }
-            else if (activeSelectionMode == SelectionMode.Manipulate_Raycast)
-            {
-                activeSelectionMode = SelectionMode.Manipulate_TBD;
-                mr.enabled = false;
-            }
-            else if (activeSelectionMode == SelectionMode.Manipulate_TBD)
-            {
-                activeSelectionMode = SelectionMode.Teleport;
-                tp.enabled = true; ;
-            }
-            else if (activeSelectionMode == SelectionMode.Teleport)
-            {
-                activeSelectionMode = SelectionMode.Selection;
-                tp.enabled = false;
-            }
-            UpdateUI();
-        }
-
-
-        //handles the case when player selects/deselects an object
-        if (Input.GetKeyDown(selectKey) || OVRInput.Get(selectKeyTouch))
-        {
-            if (activeSelectionMode == SelectionMode.Selection)
-            {
-                HandleSelection();
-            }
-        }
-
-
-        if (Input.GetKeyDown(ManipulateActionKey) || OVRInput.Get(ManipulateActionKeyTouch))
-        {
-
+            HandleSelection();
         }
     }
 
-
+    //meat and bread of selecting and deselecting objects
     private void HandleSelection()
     {
         if (!focusedObject)
-        {
             return;
-        }
 
-        if (!focusedObject.selected)
+
+        if (!focusedObject.selected) //if focused object is already in a group
         {
             selectedObjects.Add(focusedObject);
             if(selectedObjects.Count == 1)
@@ -223,7 +196,7 @@ public class SelectObject : MonoBehaviour {
                 focusedObject.Start_Interaction(false);
             }
         }
-        else
+        else //if focused object is already not in a group
         {
             selectedObjects.Remove(focusedObject);
             focusedObject.Start_Interaction();
@@ -250,7 +223,6 @@ public class SelectObject : MonoBehaviour {
         
     }
 
-
     private void UpdateUI()
     {
         if (activeSelectionMode == SelectionMode.Selection)
@@ -259,6 +231,8 @@ public class SelectObject : MonoBehaviour {
             T_teleportMode.color = S_DefaultColor;
             T_raycastMode.color = S_DefaultColor;
             T_freeformMode.color = S_DefaultColor;
+            tp.enabled = false;
+            mr.enabled = false;
         }
         else if (activeSelectionMode == SelectionMode.Manipulate_Raycast)
         {
@@ -266,6 +240,8 @@ public class SelectObject : MonoBehaviour {
             T_selectionMode.color = S_DefaultColor;
             T_raycastMode.color = S_SelectedColor;
             T_freeformMode.color = S_DefaultColor;
+            tp.enabled = false;
+            mr.enabled = true;
         }
         else if (activeSelectionMode == SelectionMode.Manipulate_TBD)
         {
@@ -273,6 +249,8 @@ public class SelectObject : MonoBehaviour {
             T_selectionMode.color = S_DefaultColor;
             T_raycastMode.color = S_DefaultColor;
             T_freeformMode.color = S_SelectedColor;
+            tp.enabled = false;
+            mr.enabled = false;
         }
         else if (activeSelectionMode == SelectionMode.Teleport)
         {
@@ -280,7 +258,10 @@ public class SelectObject : MonoBehaviour {
             T_selectionMode.color = S_DefaultColor;
             T_raycastMode.color = S_DefaultColor;
             T_freeformMode.color = S_DefaultColor;
+            tp.enabled = true;
+            mr.enabled = false;
         }
+        
     }
 
     public void ManipulationDone()
