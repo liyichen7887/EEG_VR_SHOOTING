@@ -50,7 +50,7 @@ public class ManipulateRaycast : MonoBehaviour
 
     private void PerformRaycast()
     {
-        Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.red);
+        Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.green);
         Ray ray = new Ray(RaycastObject.position, RaycastObject.up);
         if (Physics.Raycast(ray, out hit, 20.0f))
         {

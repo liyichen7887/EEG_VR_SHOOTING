@@ -41,7 +41,7 @@ public class Teleport : MonoBehaviour
     {
        
 
-        Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.red);
+        Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.blue);
         Ray ray = new Ray(RaycastObject.position, RaycastObject.up);
         if (Physics.Raycast(ray, out hit, 10.0f))
         {
