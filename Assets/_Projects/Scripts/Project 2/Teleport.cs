@@ -7,7 +7,6 @@ public class Teleport : MonoBehaviour
     //raycast performed using position and forward vector of the following transform
     public Transform RaycastObject;
     public Transform ObjectToTP;
-    public LineRenderer lr;
     public AudioSource audioSource;
     public AudioClip teleportSound;
 
@@ -23,7 +22,7 @@ public class Teleport : MonoBehaviour
     private Floor floor;
     private Vector3 hitPoint;
 
-    private bool canTP;
+    public bool canTP;
     // Use this for initialization
     void Start()
     {
@@ -32,8 +31,8 @@ public class Teleport : MonoBehaviour
 
     private void OnDisable()
     {
-        lr.SetPosition(0, Vector3.zero);
-        lr.SetPosition(1, Vector3.zero);
+       // lr.SetPosition(0, Vector3.zero);
+       // lr.SetPosition(1, Vector3.zero);
     }
 
     // Update is called once per frame
@@ -42,29 +41,23 @@ public class Teleport : MonoBehaviour
        
 
         Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.blue);
-        Ray ray = new Ray(RaycastObject.position, RaycastObject.up);
+        Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
         if (Physics.Raycast(ray, out hit, 10.0f))
         {
             hitLocation = hit.transform;
             floor = hitLocation.GetComponent<Floor>();
             hitPoint = hit.point;
-            raycastResult.text = "Raycast: " + hitLocation.name;
+           // raycastResult.text = "Raycast: " + hitLocation.name;
             canTP = (floor) ? true : false;
-
-            lr.SetPosition(0, RaycastObject.position);
-            lr.SetPosition(1, hitPoint);
-
         }
         else
         {
-            lr.SetPosition(0, Vector3.zero);
-            lr.SetPosition(1, Vector3.zero);
-            raycastResult.text = "Raycast: ---" ;
+          //  raycastResult.text = "Raycast: ---" ;
             floor = null;
             canTP = false;
         }
 
-        if ((Input.GetKeyDown(keyboardKey) || OVRInput.Get(touchKey)) && canTP )
+        if ((Input.GetKeyDown(keyboardKey) || OVRInput.GetUp(touchKey)) && canTP )
         {
             TP();
         }

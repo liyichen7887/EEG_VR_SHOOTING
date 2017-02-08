@@ -7,13 +7,12 @@ public class ManipulateRaycast : MonoBehaviour
     //raycast performed using position and forward vector of the following transform
     public Transform RaycastObject;
     public LineRenderer lr;
-    public Text t;
     public AudioSource audioSource;
     public AudioClip clickSound;
     public SelectObject so;
     [Header("Key Bindings")]
     public KeyCode mainKey = KeyCode.Mouse0;
-    public OVRInput.Button mainKeyTouch = OVRInput.Button.Four;
+    public OVRInput.Button mainKeyTouch = OVRInput.Button.Two;
     public KeyCode cancelKey = KeyCode.Mouse1;
     public OVRInput.Button cancelKeyTouch = OVRInput.Button.Three;
 
@@ -23,7 +22,7 @@ public class ManipulateRaycast : MonoBehaviour
     private Vector3 hitPoint;
  //   private SelectableObjects sObj;
 
-    public Transform initialTransform;
+    private Transform initialTransform;
     private bool Manipulating = false;
     // Use this for initialization
     void Start()
@@ -50,8 +49,17 @@ public class ManipulateRaycast : MonoBehaviour
 
     private void PerformRaycast()
     {
-        Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.green);
-        Ray ray = new Ray(RaycastObject.position, RaycastObject.up);
+        bool pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
+        Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
+        if (!pointing)
+        {
+            hitLocation = null;
+            lr.SetPosition(0, Vector3.zero);
+            lr.SetPosition(1, Vector3.zero);
+            return;
+        }
+
+
         if (Physics.Raycast(ray, out hit, 20.0f))
         {
             hitLocation = hit.transform;
@@ -60,14 +68,10 @@ public class ManipulateRaycast : MonoBehaviour
 
             lr.SetPosition(0, RaycastObject.position);
             lr.SetPosition(1, hitPoint);
-            t.text = "Result: " + hit.transform.name;
-
         }
         else
         {
-            t.text = "Result: -- ";
             hitLocation = null;
-           // sObj = null;
             lr.SetPosition(0, Vector3.zero);
             lr.SetPosition(1, Vector3.zero);
         }
@@ -98,6 +102,8 @@ public class ManipulateRaycast : MonoBehaviour
             }
             else
             {
+                if (!so.PivotTransform)
+                    return;
                 Manipulating = true;
                 initialTransform = so.PivotTransform;
                 audioSource.PlayOneShot(clickSound);

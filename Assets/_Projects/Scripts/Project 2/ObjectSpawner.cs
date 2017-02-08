@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
-
+[RequireComponent(typeof(SelectObject))]
 public class ObjectSpawner : MonoBehaviour {
 
     public static ObjectSpawner Instance;
@@ -39,11 +39,11 @@ public class ObjectSpawner : MonoBehaviour {
         if (so.activeSelectionMode != SelectionMode.Selection)
             return;
 
-        if (Input.GetKeyDown(NextItem) || OVRInput.Get(NextItemTouch))
+        if (Input.GetKeyDown(NextItem) || OVRInput.GetUp(NextItemTouch))
         {
             SelectNextItem();
         }
-        if (Input.GetKeyDown(spawnKey) || OVRInput.Get(spawnKeyTouch))
+        if (Input.GetKeyDown(spawnKey) || OVRInput.GetUp(spawnKeyTouch))
         {
             SpawnItem();
         }
