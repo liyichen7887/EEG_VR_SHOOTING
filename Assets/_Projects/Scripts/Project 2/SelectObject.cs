@@ -196,8 +196,11 @@ public class SelectObject : MonoBehaviour {
                 focusedObject.Start_Interaction(false);
             }
         }
-        else //if focused object is already not in a group
+        else //if focused object is  not in a group
         {
+            if(PivotTransform)
+
+
             selectedObjects.Remove(focusedObject);
             focusedObject.Start_Interaction();
             focusedObject.transform.SetParent(null);
