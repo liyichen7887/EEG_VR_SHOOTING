@@ -33,8 +33,7 @@ public class SelectObject : MonoBehaviour {
     
     //used for handling selection
     private List<SelectableObjects> selectedObjects;
-    [HideInInspector]
-    public Transform PivotTransform; 
+  
 
     [Header("Misc")]
     public Transform RootTransform;
@@ -43,13 +42,14 @@ public class SelectObject : MonoBehaviour {
      * RootTransform as their parent, if the 1st item is getting deselected,
      *  
      */
-
+    // [HideInInspector]
+    public Transform PivotTransform;
 
     //used for raycasting
     private RaycastHit hit;
     private Transform hitTransform;
      private Vector3 hitPoint;
-    private SelectableObjects focusedObject;
+    public SelectableObjects focusedObject;
 
 
     //used for mode change
@@ -180,8 +180,17 @@ public class SelectObject : MonoBehaviour {
         if (!focusedObject)
             return;
 
+        if (PivotTransform == null) //this is the first object selected, check whether the object is whiteboard or not
+            pivotIsWhiteBoard = (focusedObject.alignWithWall) ? true : false;
 
-        if (!focusedObject.selected) //if focused object is already in a group
+
+        if (pivotIsWhiteBoard && !focusedObject.alignWithWall)
+            return;
+
+        if (!pivotIsWhiteBoard && focusedObject.alignWithWall)
+            return;
+
+        if (!focusedObject.selected) //if focused object is not in a group
         {
             selectedObjects.Add(focusedObject);
             if(selectedObjects.Count == 1)
@@ -196,10 +205,15 @@ public class SelectObject : MonoBehaviour {
                 focusedObject.Start_Interaction(false);
             }
         }
-        else //if focused object is  not in a group
+        else //if focused object is  already in a group
         {
-            if(PivotTransform)
-
+     
+            //do nothing if pivot is whiteboard and trying to add non-whiteboard objects to the group
+            if (pivotIsWhiteBoard && !focusedObject.alignWithWall)
+            {
+                Debug.Log("Returning because trying to add non-whiteboards to whiteboard group");
+                return;
+            }
 
             selectedObjects.Remove(focusedObject);
             focusedObject.Start_Interaction();
