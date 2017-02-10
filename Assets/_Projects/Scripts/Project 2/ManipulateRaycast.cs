@@ -13,8 +13,8 @@ public class ManipulateRaycast : MonoBehaviour
     [Header("Key Bindings")]
     public KeyCode mainKey = KeyCode.Mouse0;
     public OVRInput.Button mainKeyTouch = OVRInput.Button.Two;
-    public KeyCode cancelKey = KeyCode.Mouse1;
     public OVRInput.Button cancelKeyTouch = OVRInput.Button.Three;
+    public OVRInput.Controller rotationController;
 
     private RaycastHit hit;
     private Transform hitLocation;
@@ -63,7 +63,6 @@ public class ManipulateRaycast : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 20.0f))
         {
             hitLocation = hit.transform;
-           // sObj = hitLocation.GetComponent<SelectableObjects>();
             hitPoint = hit.point;
 
             lr.SetPosition(0, RaycastObject.position);
@@ -85,13 +84,17 @@ public class ManipulateRaycast : MonoBehaviour
             return;
 
         so.PivotTransform.position = new Vector3(hitPoint.x, so.PivotTransform.position.y, hitPoint.z);
-
+        Vector3 c = OVRInput.GetLocalControllerRotation(rotationController).eulerAngles;
+        Vector3 objR = so.PivotTransform.rotation.eulerAngles;
+        Vector3 nEuler = new Vector3(objR.x, c.y, objR.z);
+        Quaternion q = Quaternion.Euler(nEuler);
+        so.PivotTransform.rotation = q;
     }
 
 
     private void CheckKeyInput()
     {
-        if (Input.GetKeyDown(mainKey) || OVRInput.Get(mainKeyTouch))
+        if (Input.GetKeyDown(mainKey) || OVRInput.GetDown(mainKeyTouch))
         {
             if (Manipulating)
             {
@@ -110,15 +113,7 @@ public class ManipulateRaycast : MonoBehaviour
                 so.SetCollidersActive(false);
             }
         }
-        /*
-        if (Input.GetKeyDown(cancelKey) || OVRInput.Get(cancelKeyTouch))
-        {
-            if (Manipulating)
-            {
-                Manipulating = false;
-                so.PivotTransform = initialTransform;
-            }
-        }*/
+
     }
 
 
