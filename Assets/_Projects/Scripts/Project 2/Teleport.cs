@@ -7,6 +7,7 @@ public class Teleport : MonoBehaviour
     //raycast performed using position and forward vector of the following transform
     public Transform RaycastObject;
     public Transform ObjectToTP;
+    public SelectObject so;
     public AudioSource audioSource;
     public AudioClip teleportSound;
 
@@ -21,28 +22,23 @@ public class Teleport : MonoBehaviour
     private Transform hitLocation;
     private Floor floor;
     private Vector3 hitPoint;
-
+    private int floorLayerMask = 11 << 8;
     public bool canTP;
+    private bool pointing;
     // Use this for initialization
     void Start()
     {
         canTP = false;
     }
 
-    private void OnDisable()
-    {
-       // lr.SetPosition(0, Vector3.zero);
-       // lr.SetPosition(1, Vector3.zero);
-    }
-
     // Update is called once per frame
     void Update()
     {
-       
+        pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
 
         Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.blue);
         Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
-        if (Physics.Raycast(ray, out hit, 10.0f))
+        if (Physics.Raycast(ray, out hit, 40.0f, floorLayerMask ))
         {
             hitLocation = hit.transform;
             floor = hitLocation.GetComponent<Floor>();
@@ -57,7 +53,7 @@ public class Teleport : MonoBehaviour
             canTP = false;
         }
 
-        if ((Input.GetKeyDown(keyboardKey) || OVRInput.GetUp(touchKey)) && canTP )
+        if (OVRInput.GetUp(touchKey) && canTP )
         {
             TP();
         }
@@ -68,6 +64,8 @@ public class Teleport : MonoBehaviour
 
     private void TP()
     {
+        if (!pointing)
+            return;
         ObjectToTP.position = new Vector3(hitPoint.x, ObjectToTP.position.y, hitPoint.z);
         audioSource.PlayOneShot(teleportSound);
     }

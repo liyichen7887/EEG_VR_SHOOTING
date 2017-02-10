@@ -11,7 +11,7 @@ public class SelectObject : MonoBehaviour {
     public ManipulateRaycast mr;
     public Transform RaycastObject;
     public LineRenderer lr;
-
+    public RightThumStickControl rts;
     [Header("Audio Fields")]
     public AudioSource audioS;
     public AudioClip selectSound;
@@ -56,7 +56,6 @@ public class SelectObject : MonoBehaviour {
     private bool canGetThumbstick = true;
     private float axisThreshold = 0.75f;
 
-
     //variables for handling whiteboard interaction with wall
     [HideInInspector]
     public bool pivotIsWhiteBoard = false;
@@ -64,7 +63,7 @@ public class SelectObject : MonoBehaviour {
 
     void Awake () {
         Instance = this;
-        UpdateUI();
+        UpdateUI(false);
         selectedObjects = new List<SelectableObjects>();
     }
 	
@@ -96,9 +95,11 @@ public class SelectObject : MonoBehaviour {
 
     }
 
+   
     private void CheckPointingAndRenderLine()
     {
         bool pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
+
         if (pointing)
         {
             lr.SetPosition(0, RaycastObject.position);
@@ -131,7 +132,7 @@ public class SelectObject : MonoBehaviour {
                     //thumstick:right
                     activeSelectionMode = SelectionMode.Manipulate_TBD;
                 }
-                UpdateUI();
+                UpdateUI(true);
                 SetCollidersActive(true);
             }
             else if (Mathf.Abs(r.y) > axisThreshold)
@@ -147,7 +148,7 @@ public class SelectObject : MonoBehaviour {
                     //thumstick: bottom
                     activeSelectionMode = SelectionMode.Teleport;
                 }
-                UpdateUI();
+                UpdateUI(true);
                 SetCollidersActive(true);
             }
         }
@@ -197,6 +198,7 @@ public class SelectObject : MonoBehaviour {
             if(selectedObjects.Count == 1)
             {
                 PivotTransform = focusedObject.transform;
+                PivotTransform.SetParent(null);
                 RootTransform.SetParent(PivotTransform);
                 focusedObject.Start_Interaction(true);
             }
@@ -211,10 +213,7 @@ public class SelectObject : MonoBehaviour {
      
             //do nothing if pivot is whiteboard and trying to add non-whiteboard objects to the group
             if (pivotIsWhiteBoard && !focusedObject.alignWithWall)
-            {
-                Debug.Log("Returning because trying to add non-whiteboards to whiteboard group");
                 return;
-            }
 
             selectedObjects.Remove(focusedObject);
             focusedObject.Start_Interaction();
@@ -241,7 +240,7 @@ public class SelectObject : MonoBehaviour {
         
     }
 
-    private void UpdateUI()
+    public void UpdateUI(bool updateOthers)
     {
         if (activeSelectionMode == SelectionMode.Selection)
         {
@@ -251,6 +250,7 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_DefaultColor;
             tp.enabled = false;
             mr.enabled = false;
+           
         }
         else if (activeSelectionMode == SelectionMode.Manipulate_Raycast)
         {
@@ -260,6 +260,7 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_DefaultColor;
             tp.enabled = false;
             mr.enabled = true;
+           
         }
         else if (activeSelectionMode == SelectionMode.Manipulate_TBD)
         {
@@ -269,6 +270,7 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_SelectedColor;
             tp.enabled = false;
             mr.enabled = false;
+           
         }
         else if (activeSelectionMode == SelectionMode.Teleport)
         {
@@ -278,8 +280,25 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_DefaultColor;
             tp.enabled = true;
             mr.enabled = false;
+           
         }
-        
+        else if(activeSelectionMode == SelectionMode.None)
+        {
+            T_teleportMode.color = S_DefaultColor;
+            T_selectionMode.color = S_DefaultColor;
+            T_raycastMode.color = S_DefaultColor;
+            T_freeformMode.color = S_DefaultColor;
+            tp.enabled = false;
+            mr.enabled = false;
+           
+        }
+
+        if (updateOthers)
+        {
+            rts.mode = RightThumbStickModes.None;
+            rts.UpdateUI(false);
+        }
+
     }
 
     public void ManipulationDone()
@@ -316,6 +335,6 @@ public class SelectObject : MonoBehaviour {
 
 public enum SelectionMode
 {
-    Selection, Manipulate_Raycast, Manipulate_TBD, Teleport
+    Selection, Manipulate_Raycast, Manipulate_TBD, Teleport, None
 }
 

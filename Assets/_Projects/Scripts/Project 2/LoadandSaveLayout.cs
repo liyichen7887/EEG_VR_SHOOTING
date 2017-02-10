@@ -5,9 +5,12 @@ using System.IO;
 
 public class LoadandSaveLayout : MonoBehaviour
 {
-
+    public ObjectSpawner os;
     public string relativePath = "/_Projects";
     private string absolutePath;
+    public AudioSource audS;
+    public AudioClip saveClip;
+    public AudioClip loadClip;
     // Use this for initialization
     void Start()
     {
@@ -29,7 +32,7 @@ public class LoadandSaveLayout : MonoBehaviour
         {
            File.Create(absolutePath);
         }
-
+        audS.PlayOneShot(saveClip);
         StreamWriter sw = new StreamWriter(absolutePath);
         foreach (GameObject o in ObjectSpawner.Instance.spawnedItems)
         {
@@ -44,12 +47,16 @@ public class LoadandSaveLayout : MonoBehaviour
 
     public void Load()
     {
+        
         if (!File.Exists(absolutePath))
         {
             Debug.LogError("Path/File doesn't exist");
+            return;
         }
         char[] delimiter = { ',' };
         StreamReader sr = new StreamReader(absolutePath);
+        audS.PlayOneShot(loadClip);
+        os.DestroyAll();
 
         string line = sr.ReadLine();
         while (line != null)

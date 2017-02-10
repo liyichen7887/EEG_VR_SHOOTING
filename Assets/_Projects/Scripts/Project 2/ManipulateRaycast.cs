@@ -7,10 +7,10 @@ public class ManipulateRaycast : MonoBehaviour
     //raycast performed using position and forward vector of the following transform
     public Text t;
     public Transform RaycastObject;
-    public LineRenderer lr;
     public AudioSource audioSource;
     public AudioClip clickSound;
     public SelectObject so;
+    public float wallOffset = 0.01f;
     [Header("Key Bindings")]
     public KeyCode mainKey = KeyCode.Mouse0;
     public OVRInput.Button mainKeyTouch = OVRInput.Button.Two;
@@ -29,78 +29,54 @@ public class ManipulateRaycast : MonoBehaviour
     private int wallLayerMask = 1 << 10;
     private int floorLayerMask = 1 << 11;
     private int combinedLayerMask;
-
+    private bool pointing;
     private void Start()
     {
         combinedLayerMask = wallLayerMask | floorLayerMask;
 
     }
 
-    private void OnDisable()
-    {
-        if (lr)
-        {
-            lr.SetPosition(0, Vector3.zero);
-            lr.SetPosition(1, Vector3.zero);
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
+        pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
         PerformRaycast();
         PerformManipulation();
         CheckKeyInput();
+
     }
 
+   // public bool pointing;
     private void PerformRaycast()
     {
-       
 
-        bool pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
-        if (!pointing)
-        {
-            hitLocation = null;
-            lr.SetPosition(0, Vector3.zero);
-            lr.SetPosition(1, Vector3.zero);
-            return;
-        }
-        else
-        {
-            hitLocation = null;
-            lr.SetPosition(0, Vector3.zero);
-            lr.SetPosition(1, RaycastObject.right*20.0f);
-        }
         Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
-        if (Physics.Raycast(ray, out hit, 20.0f, combinedLayerMask))
+        if (Physics.Raycast(ray, out hit, 100.0f, combinedLayerMask))
         {
             hitLocation = hit.transform;
             hitPoint = hit.point;
 
-            lr.SetPosition(0, RaycastObject.position);
-            lr.SetPosition(1, hitPoint);
             if(hitLocation.gameObject.tag == "wall")
             {
                 focusingFloor = false;
                 focusingWall = true;
-                t.text = "Wall";
             }
             else if (hitLocation.gameObject.tag == "floor")
             {
-                focusingFloor = false;
-                focusingWall = true;
-                t.text = "Floor";
+                focusingFloor = true;
+                focusingWall = false;
             }
             else
             {
                 focusingFloor = false;
                 focusingWall = false;
-                t.text = "None";
             }
         }
         else
         {
             hitLocation = null;
+            focusingFloor = false;
+            focusingWall = false;
         }
     }
 
@@ -119,18 +95,24 @@ public class ManipulateRaycast : MonoBehaviour
             Vector3 nEuler = new Vector3(objR.x, c.y, objR.z);
             Quaternion q = Quaternion.Euler(nEuler);
             so.PivotTransform.rotation = q;
-            drawNormal();
+            t.text = "group: others";
         }
         else//handles the case when pivot is a whiteboard
         {
-            drawNormal();
+            if (!focusingWall)
+                return;
+            
+            Vector3 position = new Vector3(hitPoint.x, so.PivotTransform.position.y, hitPoint.z); ;
+            so.PivotTransform.position = position;
+            t.text = "x: " + hitPoint.x + "  y:" + hitPoint.y + "   z:" + hitPoint.z;
+            so.PivotTransform.rotation = Quaternion.FromToRotation(Vector3.right, hit.normal);
         }
 
     }
 
     private void drawNormal()
     {
-
+      //  Debug.DrawRay(hitPoint, hit.normal*4.0f, Color.green);
     }
 
 

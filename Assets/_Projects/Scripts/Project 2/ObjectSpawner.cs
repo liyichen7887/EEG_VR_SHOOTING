@@ -100,6 +100,13 @@ public class ObjectSpawner : MonoBehaviour {
 
     }
 
+    public void DestroyAll()
+    {
+        foreach(GameObject o in spawnedItems)
+        {
+            Destroy(o);
+        }
+    }
 
 }
 

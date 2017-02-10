@@ -6,6 +6,11 @@ public class SelectableObjects : Interactable {
     public string Objectname;
     public bool alignWithWall = false;
     public float yValue = 1.0f;
+
+    //white
+    public float xOffset = 0.0f;
+    public float yOffset = 0.0f;
+
     public Color selectionColor = new Color(0f, 1f, 1f, 1f);
     public Color PivotColor = Color.red;
     [HideInInspector]
