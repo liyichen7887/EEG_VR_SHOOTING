@@ -25,10 +25,13 @@ public class Teleport : MonoBehaviour
     private int floorLayerMask = 11 << 8;
     public bool canTP;
     private bool pointing;
+
+    private float initialHeight = 1.81f;
     // Use this for initialization
     void Start()
     {
         canTP = false;
+       // initialHeight = ObjectToTP.position.y;
     }
 
     // Update is called once per frame
@@ -38,7 +41,7 @@ public class Teleport : MonoBehaviour
 
         Debug.DrawRay(RaycastObject.position, RaycastObject.up * 15.0f, Color.blue);
         Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
-        if (Physics.Raycast(ray, out hit, 40.0f, floorLayerMask ))
+        if (Physics.Raycast(ray, out hit, 400.0f, floorLayerMask ))
         {
             hitLocation = hit.transform;
             floor = hitLocation.GetComponent<Floor>();
@@ -66,7 +69,7 @@ public class Teleport : MonoBehaviour
     {
         if (!pointing)
             return;
-        ObjectToTP.position = new Vector3(hitPoint.x, ObjectToTP.position.y, hitPoint.z);
+        ObjectToTP.position = new Vector3(hitPoint.x, initialHeight, hitPoint.z);
         audioSource.PlayOneShot(teleportSound);
     }
 }

@@ -8,6 +8,9 @@ public class RightThumStickControl : MonoBehaviour {
     
     public RightThumbStickModes mode = RightThumbStickModes.None;
     public SelectObject so;
+    public Freefly freefly;
+    public Uprightfly uprightFly;
+    public Measurement measurement;
     [Header("Load And Save Settings")]
     public LoadandSaveLayout loadAndSave;
     public OVRInput.Button loadButton = OVRInput.Button.One;
@@ -54,7 +57,7 @@ public class RightThumStickControl : MonoBehaviour {
                 else
                 {
                     //thumstick:right
-                    mode = RightThumbStickModes.Mode2;
+                    mode = RightThumbStickModes.Freefly;
 
                 }
                 UpdateUI(true);
@@ -65,13 +68,13 @@ public class RightThumStickControl : MonoBehaviour {
                 if (r.y > 0f)
                 {
                     // thumstick: top
-                    mode = RightThumbStickModes.Mode3;
+                    mode = RightThumbStickModes.UprightFly;
 
                 }
                 else
                 {
                     //thumstick: bottom
-                    mode = RightThumbStickModes.Mode4;
+                    mode = RightThumbStickModes.Measurement;
                 }
                 UpdateUI(true);
 
@@ -125,30 +128,42 @@ public class RightThumStickControl : MonoBehaviour {
             T_right.color = S_DefaultColor;
             T_up.color = S_DefaultColor;
             T_bottom.color = S_DefaultColor;
+            freefly.enabled = false;
+            uprightFly.enabled = false;
+            measurement.enabled = false;
         }
-        else if(mode == RightThumbStickModes.Mode2)
+        else if(mode == RightThumbStickModes.Freefly)
         {
             
             T_left.color = S_DefaultColor;
             T_right.color = S_SelectedColor;
             T_up.color = S_DefaultColor;
             T_bottom.color = S_DefaultColor;
+            freefly.enabled = true;
+            uprightFly.enabled = false;
+            measurement.enabled = false;
         }
-        else if (mode == RightThumbStickModes.Mode3)
+        else if (mode == RightThumbStickModes.UprightFly)
         {
             
             T_left.color = S_DefaultColor;
             T_right.color = S_DefaultColor;
             T_up.color = S_SelectedColor;
             T_bottom.color = S_DefaultColor;
+            freefly.enabled = false;
+            uprightFly.enabled = true;
+            measurement.enabled = false;
         }
-        else if (mode == RightThumbStickModes.Mode4)
+        else if (mode == RightThumbStickModes.Measurement)
         {
             
             T_left.color = S_DefaultColor;
             T_right.color = S_DefaultColor;
             T_up.color = S_DefaultColor;
             T_bottom.color = S_SelectedColor;
+            freefly.enabled = false;
+            uprightFly.enabled = false;
+            measurement.enabled = true;
         }
         else if (mode == RightThumbStickModes.None)
         {
@@ -157,6 +172,9 @@ public class RightThumStickControl : MonoBehaviour {
             T_right.color = S_DefaultColor;
             T_up.color = S_DefaultColor;
             T_bottom.color = S_DefaultColor;
+            freefly.enabled = false;
+            uprightFly.enabled = false;
+            measurement.enabled = false;
         }
 
         if (updateOthers)
@@ -171,5 +189,5 @@ public class RightThumStickControl : MonoBehaviour {
 
 public enum RightThumbStickModes
 {
-    LoadAndSave, Mode2, Mode3, Mode4, None
+    LoadAndSave, Freefly, UprightFly, Measurement, None
 }
