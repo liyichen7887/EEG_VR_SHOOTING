@@ -58,7 +58,8 @@ public class SelectObject : MonoBehaviour {
 
 
     //variables for handling whiteboard interaction with wall
-    private bool pivotIsWhiteBoard = false;
+    [HideInInspector]
+    public bool pivotIsWhiteBoard = false;
 
 
     void Awake () {
