@@ -8,7 +8,6 @@ public class Measurement : MonoBehaviour {
     public Text Result;
     public Transform RaycastObject;
     public OVRInput.Button button = OVRInput.Button.Two;
-    private bool pause = false;
     private RaycastHit hit;
     private Transform hitTransform;
     private Vector3 hitPoint;

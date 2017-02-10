@@ -28,8 +28,6 @@ public class HandGrab : MonoBehaviour {
     //used for raycasting
     private RaycastHit hit;
     private Transform hitTransform;
-    private Vector3 hitPoint;
-    private int frameCounter = 0;
     private float xdiff = 0f;
     private float zdiff = 0f;
     private bool startManipulating = false;
@@ -94,7 +92,7 @@ public class HandGrab : MonoBehaviour {
             xdiff += (controllerPositionCurrentFrame.x - controllerPositionLastFrame.x);
             zdiff += (controllerPositionCurrentFrame.z - controllerPositionLastFrame.z);
             if (grabbedObject.alignWithWall)
-                xdiff = 0;
+                zdiff = 0;
 
             grabbedObject.transform.position = initialObjPosition + new Vector3(-zdiff, 0, xdiff) * objMovementSpeed;
 
@@ -129,7 +127,7 @@ public class HandGrab : MonoBehaviour {
         {
             hitTransform = hit.transform;
             focusedObject = hitTransform.GetComponent<SelectableObjects>();
-            hitPoint = hit.point;
+           // hitPoint = hit.point;
         }
         else
         {

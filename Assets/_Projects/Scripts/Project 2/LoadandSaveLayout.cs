@@ -35,6 +35,7 @@ public class LoadandSaveLayout : MonoBehaviour
         }
         audS.PlayOneShot(saveClip);
         StreamWriter sw = new StreamWriter(absolutePath);
+        
         foreach (GameObject o in os.spawnedItems)
         {
             Vector3 pos = o.transform.position;

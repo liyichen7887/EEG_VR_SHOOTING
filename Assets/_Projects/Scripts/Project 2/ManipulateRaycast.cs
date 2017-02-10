@@ -22,7 +22,7 @@ public class ManipulateRaycast : MonoBehaviour
     private Vector3 hitPoint;
  //   private SelectableObjects sObj;
 
-    private Transform initialTransform;
+  //  private Transform initialTransform;
     private bool Manipulating = false;
     private int wallLayerMask = 1 << 10;
     private int floorLayerMask = 1 << 11;
@@ -122,7 +122,7 @@ public class ManipulateRaycast : MonoBehaviour
                 if (!so.PivotTransform)
                     return;
                 Manipulating = true;
-                initialTransform = so.PivotTransform;
+            //    initialTransform = so.PivotTransform;
                 audioSource.PlayOneShot(clickSound);
                 so.SetCollidersActive(false);
             }

@@ -106,6 +106,7 @@ public class ObjectSpawner : MonoBehaviour {
         {
             Destroy(o);
         }
+        spawnedItems.Clear();
     }
 
 }

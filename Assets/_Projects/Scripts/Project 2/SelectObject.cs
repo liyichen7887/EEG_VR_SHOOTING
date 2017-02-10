@@ -50,7 +50,7 @@ public class SelectObject : MonoBehaviour {
     //used for raycasting
     private RaycastHit hit;
     private Transform hitTransform;
-     private Vector3 hitPoint;
+   //  private Vector3 hitPoint;
     [HideInInspector]
     public SelectableObjects focusedObject;
 
@@ -87,7 +87,7 @@ public class SelectObject : MonoBehaviour {
         {
             hitTransform = hit.transform;
             focusedObject = hitTransform.GetComponent<SelectableObjects>();
-            hitPoint = hit.point;
+           // hitPoint = hit.point;
         }
         else
         {
