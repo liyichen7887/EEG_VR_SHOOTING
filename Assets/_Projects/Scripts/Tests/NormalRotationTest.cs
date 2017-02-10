@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NormalRotationTest : MonoBehaviour
 {
-
+    /*
     public Transform RaycastObject;
     public Transform objToRotate;
     private RaycastHit hit;
@@ -28,5 +28,5 @@ public class NormalRotationTest : MonoBehaviour
           
             objToRotate.rotation = Quaternion.FromToRotation(Vector3.right, hit.normal);
         }
-    }
+    }*/
 }

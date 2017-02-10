@@ -16,8 +16,8 @@ public class TouchTransformTest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Vector3 position = OVRInput.GetLocalControllerPosition(controller);
-        Quaternion rotation = OVRInput.GetLocalControllerRotation(controller) ;
+       // Vector3 position = OVRInput.GetLocalControllerPosition(controller);
+      //  Quaternion rotation = OVRInput.GetLocalControllerRotation(controller) ;
         /*
         Quaternion objR = obj.transform.rotation; 
         Quaternion n = new Quaternion(objR.x, objR.y, rotation.z, objR.w);

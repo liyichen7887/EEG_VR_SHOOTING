@@ -8,6 +8,7 @@ public class SelectObject : MonoBehaviour {
 
     public SelectionMode activeSelectionMode = SelectionMode.Selection;
     public Teleport tp;
+    public HandGrab hg;
     public ManipulateRaycast mr;
     public Transform RaycastObject;
     public LineRenderer lr;
@@ -37,18 +38,20 @@ public class SelectObject : MonoBehaviour {
 
     [Header("Misc")]
     public Transform RootTransform;
+    public Transform root; //copy rootTramsform again, used for load/save reset
     /* when 1st item is selected, its transform will be set to PivotTransform,
      * and have RootTransform as its first child, subsequent selection will have
      * RootTransform as their parent, if the 1st item is getting deselected,
      *  
      */
-    // [HideInInspector]
+    [HideInInspector]
     public Transform PivotTransform;
 
     //used for raycasting
     private RaycastHit hit;
     private Transform hitTransform;
      private Vector3 hitPoint;
+    [HideInInspector]
     public SelectableObjects focusedObject;
 
 
@@ -59,7 +62,8 @@ public class SelectObject : MonoBehaviour {
     //variables for handling whiteboard interaction with wall
     [HideInInspector]
     public bool pivotIsWhiteBoard = false;
-
+    private bool pointing = false;
+   
 
     void Awake () {
         Instance = this;
@@ -78,8 +82,6 @@ public class SelectObject : MonoBehaviour {
 
     private void PerformRaycast()
     {
-        // Debug.DrawRay(camT.position, camT.forward * 15, Color.black);
-       
         Ray ray = new Ray(RaycastObject.position, RaycastObject.right);
         if (Physics.Raycast(ray, out hit))
         {
@@ -98,7 +100,7 @@ public class SelectObject : MonoBehaviour {
    
     private void CheckPointingAndRenderLine()
     {
-        bool pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
+        pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
 
         if (pointing)
         {
@@ -130,7 +132,7 @@ public class SelectObject : MonoBehaviour {
                 else
                 {
                     //thumstick:right
-                    activeSelectionMode = SelectionMode.Manipulate_TBD;
+                    activeSelectionMode = SelectionMode.HandGrab;
                 }
                 UpdateUI(true);
                 SetCollidersActive(true);
@@ -250,6 +252,7 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_DefaultColor;
             tp.enabled = false;
             mr.enabled = false;
+            hg.enabled = false;
            
         }
         else if (activeSelectionMode == SelectionMode.Manipulate_Raycast)
@@ -260,9 +263,10 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_DefaultColor;
             tp.enabled = false;
             mr.enabled = true;
-           
+            hg.enabled = false;
+
         }
-        else if (activeSelectionMode == SelectionMode.Manipulate_TBD)
+        else if (activeSelectionMode == SelectionMode.HandGrab)
         {
             T_teleportMode.color = S_DefaultColor;
             T_selectionMode.color = S_DefaultColor;
@@ -270,7 +274,8 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_SelectedColor;
             tp.enabled = false;
             mr.enabled = false;
-           
+            hg.enabled = true;
+
         }
         else if (activeSelectionMode == SelectionMode.Teleport)
         {
@@ -280,7 +285,8 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_DefaultColor;
             tp.enabled = true;
             mr.enabled = false;
-           
+            hg.enabled = false;
+
         }
         else if(activeSelectionMode == SelectionMode.None)
         {
@@ -290,6 +296,7 @@ public class SelectObject : MonoBehaviour {
             T_freeformMode.color = S_DefaultColor;
             tp.enabled = false;
             mr.enabled = false;
+            hg.enabled = false;
            
         }
 
@@ -331,10 +338,19 @@ public class SelectObject : MonoBehaviour {
         PivotTransform.GetComponent<SelectableObjects>().SetMaterialColor("_Color", Color.red);
     }
 
+
+    public void reset()
+    {
+        selectedObjects.Clear();
+        RootTransform.SetParent(null);
+        PivotTransform = null;
+       
+    }
+
 }
 
 public enum SelectionMode
 {
-    Selection, Manipulate_Raycast, Manipulate_TBD, Teleport, None
+    Selection, Manipulate_Raycast, HandGrab, Teleport, None
 }
 

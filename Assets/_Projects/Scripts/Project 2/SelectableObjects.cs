@@ -14,10 +14,13 @@ public class SelectableObjects : Interactable {
     public Color selectionColor = new Color(0f, 1f, 1f, 1f);
     public Color PivotColor = Color.red;
     [HideInInspector]
+    public Color defaultColor;
+    [HideInInspector]
     public bool selected = false;
     [HideInInspector]
     public Collider col;
-    private MeshRenderer[] m_renderers;
+    [HideInInspector]
+    public MeshRenderer[] m_renderers;
 
     // Use this for initialization
     void Start () {
@@ -27,6 +30,7 @@ public class SelectableObjects : Interactable {
         m_renderers = GetComponentsInChildren<MeshRenderer>();
         col = GetComponent<Collider>();
         ObjectSpawner.Instance.spawnedItems.Add(this.gameObject);
+        defaultColor = m_renderers[0].materials[0].GetColor("_Color");
     }
 	
 
@@ -34,7 +38,7 @@ public class SelectableObjects : Interactable {
     {
         if (selected)
         {
-            SetMaterialColor("_Color", Color.black);
+            SetMaterialColor("_Color", defaultColor);
             selected = !selected;
             col.enabled = true;
 
@@ -66,7 +70,7 @@ public class SelectableObjects : Interactable {
         }
     }
 
-    private void SetColActive(bool active)
+    public void SetColActive(bool active)
     {
         col.enabled = active;
     }

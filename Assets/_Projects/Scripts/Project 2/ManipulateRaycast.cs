@@ -4,8 +4,6 @@ using UnityEngine.UI;
 public class ManipulateRaycast : MonoBehaviour
 {
 
-    //raycast performed using position and forward vector of the following transform
-    public Text t;
     public Transform RaycastObject;
     public AudioSource audioSource;
     public AudioClip clickSound;
@@ -29,7 +27,7 @@ public class ManipulateRaycast : MonoBehaviour
     private int wallLayerMask = 1 << 10;
     private int floorLayerMask = 1 << 11;
     private int combinedLayerMask;
-    private bool pointing;
+    //  private bool pointing    
     private void Start()
     {
         combinedLayerMask = wallLayerMask | floorLayerMask;
@@ -39,7 +37,7 @@ public class ManipulateRaycast : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pointing = !OVRInput.Get(OVRInput.Touch.SecondaryIndexTrigger);
+
         PerformRaycast();
         PerformManipulation();
         CheckKeyInput();
@@ -95,7 +93,6 @@ public class ManipulateRaycast : MonoBehaviour
             Vector3 nEuler = new Vector3(objR.x, c.y, objR.z);
             Quaternion q = Quaternion.Euler(nEuler);
             so.PivotTransform.rotation = q;
-            t.text = "group: others";
         }
         else//handles the case when pivot is a whiteboard
         {
@@ -104,17 +101,10 @@ public class ManipulateRaycast : MonoBehaviour
             
             Vector3 position = new Vector3(hitPoint.x, so.PivotTransform.position.y, hitPoint.z); ;
             so.PivotTransform.position = position;
-            t.text = "x: " + hitPoint.x + "  y:" + hitPoint.y + "   z:" + hitPoint.z;
             so.PivotTransform.rotation = Quaternion.FromToRotation(Vector3.right, hit.normal);
         }
 
     }
-
-    private void drawNormal()
-    {
-      //  Debug.DrawRay(hitPoint, hit.normal*4.0f, Color.green);
-    }
-
 
     private void CheckKeyInput()
     {
@@ -139,6 +129,5 @@ public class ManipulateRaycast : MonoBehaviour
         }
 
     }
-
 
 }

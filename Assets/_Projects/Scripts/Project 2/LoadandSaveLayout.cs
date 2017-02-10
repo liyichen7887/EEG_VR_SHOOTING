@@ -6,6 +6,7 @@ using System.IO;
 public class LoadandSaveLayout : MonoBehaviour
 {
     public ObjectSpawner os;
+    public SelectObject so;
     public string relativePath = "/_Projects";
     private string absolutePath;
     public AudioSource audS;
@@ -34,7 +35,7 @@ public class LoadandSaveLayout : MonoBehaviour
         }
         audS.PlayOneShot(saveClip);
         StreamWriter sw = new StreamWriter(absolutePath);
-        foreach (GameObject o in ObjectSpawner.Instance.spawnedItems)
+        foreach (GameObject o in os.spawnedItems)
         {
             Vector3 pos = o.transform.position;
             Vector3 angles = o.transform.rotation.eulerAngles;
@@ -56,7 +57,9 @@ public class LoadandSaveLayout : MonoBehaviour
         char[] delimiter = { ',' };
         StreamReader sr = new StreamReader(absolutePath);
         audS.PlayOneShot(loadClip);
+        so.reset();
         os.DestroyAll();
+        
 
         string line = sr.ReadLine();
         while (line != null)
