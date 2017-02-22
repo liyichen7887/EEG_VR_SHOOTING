@@ -20,7 +20,8 @@ public class SelectObject : MonoBehaviour {
 
 
     [Header("UI Fields")]
-   // public Text debug;
+    // public Text debug;
+    public GameObject objUI;
     public Text T_selectionMode;
     public Text T_teleportMode;
     public Text T_raycastMode;
@@ -253,6 +254,8 @@ public class SelectObject : MonoBehaviour {
             tp.enabled = false;
             mr.enabled = false;
             hg.enabled = false;
+            if (objUI)
+                objUI.SetActive(true);
            
         }
         else if (activeSelectionMode == SelectionMode.Manipulate_Raycast)
@@ -264,6 +267,8 @@ public class SelectObject : MonoBehaviour {
             tp.enabled = false;
             mr.enabled = true;
             hg.enabled = false;
+            if (objUI)
+                objUI.SetActive(false);
 
         }
         else if (activeSelectionMode == SelectionMode.HandGrab)
@@ -275,6 +280,8 @@ public class SelectObject : MonoBehaviour {
             tp.enabled = false;
             mr.enabled = false;
             hg.enabled = true;
+            if (objUI)
+                objUI.SetActive(false);
 
         }
         else if (activeSelectionMode == SelectionMode.Teleport)
@@ -286,6 +293,8 @@ public class SelectObject : MonoBehaviour {
             tp.enabled = true;
             mr.enabled = false;
             hg.enabled = false;
+            if (objUI)
+                objUI.SetActive(false);
 
         }
         else if(activeSelectionMode == SelectionMode.None)
@@ -297,7 +306,9 @@ public class SelectObject : MonoBehaviour {
             tp.enabled = false;
             mr.enabled = false;
             hg.enabled = false;
-           
+            if (objUI)
+                objUI.SetActive(false);
+
         }
 
         if (updateOthers)
