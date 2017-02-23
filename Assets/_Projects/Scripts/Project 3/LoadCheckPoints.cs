@@ -11,9 +11,12 @@ public class LoadCheckPoints : MonoBehaviour
     public GameObject checkPointPrefab;
     public GameObject checkPointMinMapPrefab;
     private float scale = 0.0254f;
+    public List<Transform> checkPoints;
+
     // Use this for initialization
     void Start()
     {
+        checkPoints = new List<Transform>();
         char[] lineDelim = { '\n' };
         string s = coordFile.text;
         string[] coords = s.Split(lineDelim);
@@ -31,6 +34,10 @@ public class LoadCheckPoints : MonoBehaviour
             GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
             sphere.transform.position = coord;
             sphere.layer = 12;
+            CheckPoint cp = go.GetComponent<CheckPoint>();
+            cp.ID = counter;
+            cp.lcp = this;
+            checkPoints.Add(go.transform);
             go.transform.position = coord;
         
         }
