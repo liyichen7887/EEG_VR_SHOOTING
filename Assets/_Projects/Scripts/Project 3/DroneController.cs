@@ -84,8 +84,12 @@ public class DroneController : MonoBehaviour {
             lr.SetPosition(1, Vector3.zero);
         }
 
-       
-        c_controller.Move(flyTowards * flySpeed);
+
+          c_controller.Move(flyTowards * flySpeed);
+      //  Vector3 p = transform.position;
+      //  p += flyTowards * flySpeed;
+      //  transform.position = p;
+
 
     }
 
@@ -93,13 +97,13 @@ public class DroneController : MonoBehaviour {
 
     public void MoveWhereLeftHandisPointingAt()
     {
-        Debug.Log("Left hand event called");
+       // Debug.Log("Left hand event called");
         state = DroneState.Forward;
     }
 
     public void MoveWhereRightHandisPointingAt()
     {
-        Debug.Log("right hand event called");
+      //  Debug.Log("right hand event called");
         state = DroneState.Forward;
         useIndexFingerAsDirection = true;
     }
@@ -112,20 +116,20 @@ public class DroneController : MonoBehaviour {
 
     public void StopMoving()
     {
-        Debug.Log("Stop  called");
+       // Debug.Log("Stop  called");
         state = DroneState.Stop;
     }
 
     public void FillerEvent1()
     {
-        Debug.Log("Filler Event 1 Called");
+      //  Debug.Log("Filler Event 1 Called");
         t.text = "Activated";
     }
 
 
     public void FillerEvent2()
     {
-        Debug.Log("Filler Event 2 Called");
+      //  Debug.Log("Filler Event 2 Called");
         t.text = "deactivate";
     }
 
