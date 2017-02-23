@@ -10,9 +10,12 @@ public class LoadCheckPoints : MonoBehaviour
     public TextAsset coordFile;
     public GameObject checkPointPrefab;
     private float scale = 0.0254f;
+    public List<Transform> checkPoints;
+
     // Use this for initialization
     void Start()
     {
+        checkPoints = new List<Transform>();
         char[] lineDelim = { '\n' };
         string s = coordFile.text;
         string[] coords = s.Split(lineDelim);
@@ -27,6 +30,10 @@ public class LoadCheckPoints : MonoBehaviour
             xyz = c.Split(spaceDelim);
             Vector3 coord = new Vector3(Int32.Parse(xyz[0])* scale, Int32.Parse(xyz[1]) * scale, Int32.Parse(xyz[2])* scale);
             GameObject go = Instantiate(checkPointPrefab) as GameObject;
+            CheckPoint cp = go.GetComponent<CheckPoint>();
+            cp.ID = counter;
+            cp.lcp = this;
+            checkPoints.Add(go.transform);
             go.transform.position = coord;
         }
     }
