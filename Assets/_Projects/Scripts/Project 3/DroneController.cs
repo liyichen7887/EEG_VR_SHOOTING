@@ -26,8 +26,12 @@ public class DroneController : MonoBehaviour {
 
     private bool useIndexFingerAsDirection = false;
 
+    private GameObject timerUI;
+    private Timer timerScript;
 	// Use this for initialization
 	void Start () {
+        timerUI = GameObject.Find("CountDown");
+        timerScript = timerUI.GetComponent<Timer>();
         c_controller = GetComponent<CharacterController>();
         provider = FindObjectOfType<LeapProvider>() as LeapProvider;
         if (!provider)
@@ -37,7 +41,8 @@ public class DroneController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        PerformDroneMovement();
+        if(timerScript.timeElapsed)
+            PerformDroneMovement();
 	}
 
     public void PerformDroneMovement()
