@@ -17,6 +17,7 @@ public class DroneController : MonoBehaviour {
     public GameObject leftHand;
     public GameObject rightHand;
 
+    private int checkPointNumber = 0;
     private CharacterController c_controller;
     private Vector3 flyTowards = Vector3.zero;
     private LeapProvider provider;
