@@ -9,6 +9,7 @@ public class LoadCheckPoints : MonoBehaviour
 
     public TextAsset coordFile;
     public GameObject checkPointPrefab;
+    public GameObject checkPointMinMapPrefab;
     private float scale = 0.0254f;
     // Use this for initialization
     void Start()
@@ -27,7 +28,11 @@ public class LoadCheckPoints : MonoBehaviour
             xyz = c.Split(spaceDelim);
             Vector3 coord = new Vector3(Int32.Parse(xyz[0])* scale, Int32.Parse(xyz[1]) * scale, Int32.Parse(xyz[2])* scale);
             GameObject go = Instantiate(checkPointPrefab) as GameObject;
+            GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
+            sphere.transform.position = coord;
+            sphere.layer = 12;
             go.transform.position = coord;
+        
         }
     }
 
