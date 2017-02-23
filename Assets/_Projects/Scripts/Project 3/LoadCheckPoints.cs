@@ -10,6 +10,7 @@ public class LoadCheckPoints : MonoBehaviour
     public TextAsset coordFile;
     public GameObject checkPointPrefab;
     public GameObject checkPointMinMapPrefab;
+    public GameObject Player;
     private float scale = 0.0254f;
     public List<Transform> checkPoints;
     public static int totalNumCheckPoint = 0;
@@ -31,17 +32,19 @@ public class LoadCheckPoints : MonoBehaviour
             xyz = c.Split(spaceDelim);
             Vector3 coord = new Vector3(Int32.Parse(xyz[0])* scale, Int32.Parse(xyz[1]) * scale, Int32.Parse(xyz[2])* scale);
             GameObject go = Instantiate(checkPointPrefab) as GameObject;
-            GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
-            sphere.transform.position = coord;
-            sphere.layer = 12;
+            go.name = "Checkpoint #" + counter;
             CheckPoint cp = go.GetComponent<CheckPoint>();
             cp.ID = counter;
             cp.lcp = this;
             checkPoints.Add(go.transform);
             go.transform.position = coord;
-        
+
+            GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
+            sphere.transform.position = coord;
+            sphere.layer = 12;
         }
         totalNumCheckPoint = checkPoints.Count;
+        Player.transform.position = checkPoints[0].position;
     }
 
 
