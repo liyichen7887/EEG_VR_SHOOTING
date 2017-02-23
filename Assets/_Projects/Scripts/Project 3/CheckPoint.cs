@@ -6,9 +6,12 @@ public class CheckPoint : MonoBehaviour {
 
     [HideInInspector]
     public int ID = -1;
+    [HideInInspector]
     public LoadCheckPoints lcp;
+
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 		
 	}
 
@@ -18,7 +21,11 @@ public class CheckPoint : MonoBehaviour {
     {
         if(other.tag == "Player")
         {
-            //other
+            DroneController dc = other.GetComponent<DroneController>();
+            if (dc.nextTargetCheckPoint == ID)
+                dc.CheckPointReached();
+
+            
         }
     }
 
