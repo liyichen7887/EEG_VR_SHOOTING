@@ -11,7 +11,7 @@ public class LoadCheckPoints : MonoBehaviour
     public GameObject checkPointPrefab;
     private float scale = 0.0254f;
     public List<Transform> checkPoints;
-
+    public static int totalNumCheckPoint = 0;
     // Use this for initialization
     void Start()
     {
@@ -21,7 +21,7 @@ public class LoadCheckPoints : MonoBehaviour
         string[] coords = s.Split(lineDelim);
         string[] xyz = new string[3];
         // int[] coord = new int[3];
-        char[] spaceDelim = { ' ' };
+        char[] spaceDelim = {' '};
         int counter = 0;
 
         foreach (string c in coords)
@@ -36,6 +36,7 @@ public class LoadCheckPoints : MonoBehaviour
             checkPoints.Add(go.transform);
             go.transform.position = coord;
         }
+        totalNumCheckPoint = checkPoints.Count;
     }
 
 

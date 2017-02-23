@@ -10,6 +10,7 @@ public class DroneController : MonoBehaviour {
     public Text t;
     public DroneState state = DroneState.Stop;
     public float flySpeed = 4.0f;
+    
     [Header("Line Render")]
     public LineRenderer lr;
     public float lineLength = 100.0f;
@@ -17,7 +18,8 @@ public class DroneController : MonoBehaviour {
     public GameObject leftHand;
     public GameObject rightHand;
 
-    private int checkPointNumber = 0;
+    [HideInInspector]
+    public int nextTargetCheckPoint = 1;
     private CharacterController c_controller;
     private Vector3 flyTowards = Vector3.zero;
     private LeapProvider provider;
@@ -35,16 +37,6 @@ public class DroneController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-   /*     if(state == DroneState.Stop)
-        {
-            t.text = "Stop mode";
-        }
-        else
-        {
-            t.text = "Move mode";
-        }
-        */
-
         PerformDroneMovement();
 	}
 
@@ -132,7 +124,14 @@ public class DroneController : MonoBehaviour {
         t.text = "deactivate";
     }
 
-
+    public void CheckPointReached()
+    {
+        nextTargetCheckPoint++;
+        if(nextTargetCheckPoint > LoadCheckPoints.totalNumCheckPoint)
+        {
+            // game ending here
+        }
+    }
 
 
 }
