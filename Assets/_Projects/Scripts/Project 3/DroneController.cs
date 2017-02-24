@@ -129,12 +129,17 @@ public class DroneController : MonoBehaviour {
             audio.PlayOneShot(gameEndSound);
             gameEndText.enabled = true;
             distance.GetComponent<Distance>().gameover = true;
+            stopwatch.GetComponent<Stopwatch>().setGameOver(true);
             particle.transform.position = particlePos.position;
             particle.SetActive(true);
-            stopwatch.GetComponent<Stopwatch>().setGameOver(true);
         }
     }
 
+
+    IEnumerator startFireWork()
+    {
+        yield return new WaitForSeconds(0.3f);
+    }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
