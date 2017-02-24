@@ -33,7 +33,7 @@ public class CheckPoint : MonoBehaviour {
     {
         if(other.tag == "Player")
         {
-            audS.PlayOneShot(cpReachedSound);
+           
            // Debug.Log("Entered checkpoint " + ID + "reached");
             if (dc.nextTargetCheckPoint == ID)
             {
@@ -41,8 +41,9 @@ public class CheckPoint : MonoBehaviour {
                 lr.material.SetColor("_Color", ReachedColor);
                 dc.CheckPointReached();
                 cpReached = true;
+                audS.PlayOneShot(cpReachedSound);
 
-               // Debug.Log("Check Point " + ID + "reached");
+                // Debug.Log("Check Point " + ID + "reached");
             }
         }
     }

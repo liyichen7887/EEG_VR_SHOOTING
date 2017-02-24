@@ -6,16 +6,15 @@ using UnityEngine.UI;
 public class Distance : MonoBehaviour {
     public Transform player;
     public Vector3 checkPoint;
-    public LoadCheckPoints loader;
+    public GameObject loader;
     private int index = 0;
-    public DroneController dc;
+    public GameObject dc;
     private float distance = 0;
     private UnityEngine.UI.Text showDis;
+    public bool gameover = false;
     
     // Use this for initialization
     void Start () {
-		loader = GameObject.Find("Checkpoint Loader").GetComponent<LoadCheckPoints>();
-        dc = GameObject.Find("Player").GetComponent<DroneController>();
         showDis = GetComponent<Text>();
         showDis.text = "" + distance;
 
@@ -23,8 +22,9 @@ public class Distance : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        index = dc.nextTargetCheckPoint;
-        checkPoint = loader.posOfCheckPointNumber(index);
+        if (gameover) return;
+        index = dc.GetComponent<DroneController>().nextTargetCheckPoint;
+        checkPoint = loader.GetComponent<LoadCheckPoints>().posOfCheckPointNumber(index);
         distance = calculateDis(checkPoint);
         showDis.text = "" + distance;
     }

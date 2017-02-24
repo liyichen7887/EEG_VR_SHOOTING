@@ -59,18 +59,6 @@ public class LoadCheckPoints : MonoBehaviour
                 cp.lr.SetPosition(1, p);
             }
             prevCheckPoint = cp;
-            // GameObject j = Instantiate(checkPointMinMapPrefab) as GameObject;
-            //  GameObject k = Instantiate(checkPointMinMapPrefab) as GameObject;
-            // j.name = "radar #" + counter;
-            // k.name = "border #" + counter;
-            // radarObjects.Add(j);
-            // borderObjects.Add(k);
-            //j.transform.position = coord;
-            //k.transform.position = coord;
-
-            /*   GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
-               sphere.transform.position = coord;
-               sphere.layer = 12;*/
         }
         totalNumCheckPoint = checkPoints.Count;
         Player.transform.position = checkPoints[0].position;
