@@ -95,10 +95,13 @@ public class DroneController : MonoBehaviour {
                 lr.SetPosition(0, Vector3.zero);
                 lr.SetPosition(1, Vector3.zero);
             }*/
+        Vector3 position = transform.position;
 
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, transform.position + flyTowards * 500f);
         c_controller.Move(flyTowards * flySpeed);
+        Vector3 currPostion = transform.position;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(currPostion-position), Time.fixedDeltaTime *3.0f);
       //  Vector3 p = transform.position;
       //  p += flyTowards * flySpeed;
       //  transform.position = p;
