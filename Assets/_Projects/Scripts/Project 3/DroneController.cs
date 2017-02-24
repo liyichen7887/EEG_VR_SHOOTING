@@ -26,7 +26,7 @@ public class DroneController : MonoBehaviour {
     private LeapProvider provider;
 
     private bool useIndexFingerAsDirection = false;
-
+    private GameObject particle;
     private GameObject timerUI;
     private Timer timerScript;
 
@@ -41,6 +41,8 @@ public class DroneController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        particle = GameObject.Find("Particle System");
+        particle.SetActive(false);
         timerUI = GameObject.Find("CountDown");
         timerScript = timerUI.GetComponent<Timer>();
         c_controller = GetComponent<CharacterController>();
@@ -155,6 +157,8 @@ public class DroneController : MonoBehaviour {
         if(nextTargetCheckPoint > LoadCheckPoints.totalNumCheckPoint)
         {
             // game ending here
+            particle.transform.position = transform.position;
+            particle.SetActive(true); 
         }
     }
 
