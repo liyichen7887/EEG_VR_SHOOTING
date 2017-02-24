@@ -12,6 +12,8 @@ public class DroneController : MonoBehaviour {
     public Text t;
     public DroneState state = DroneState.Stop;
     public float flySpeed = 4.0f;
+    public float speedUpFactor = 1.3f;
+    public bool speedUp = false;
     public LoadCheckPoints lcp;
     [Header("Line Render")]
     public LineRenderer lr;
@@ -24,7 +26,7 @@ public class DroneController : MonoBehaviour {
     public AudioClip hitSound;
     public AudioClip motorSound;
     private AudioSource audio;
-
+    public AudioSource engineAudio;
     // [HideInInspector]
     public int nextTargetCheckPoint = 2;  //1st checkpoint is where the player is at (1st set of coord in the competition file)
     private CharacterController c_controller;
@@ -38,12 +40,13 @@ public class DroneController : MonoBehaviour {
     public Text gameEndText;
 
 
-    private bool speedUp = false;
-    private float speedUpFactor = 1.0f;
-
+  
+   
     [HideInInspector]
     public bool canStart = false;
 
+
+    private float defaultVolume;
     public static DroneController Instance;
     private void Awake()
     {
@@ -59,6 +62,7 @@ public class DroneController : MonoBehaviour {
         provider = FindObjectOfType<LeapProvider>() as LeapProvider;
         gameEndText.enabled = false;
         nextTargetCheckPoint = 2;
+        defaultVolume = engineAudio.volume;
         if (!provider)
             Debug.LogError("Leap Provider not found");
     }
@@ -95,10 +99,15 @@ public class DroneController : MonoBehaviour {
             }
 
         }
+        float factor = flySpeed * Time.deltaTime;
+        if (speedUp)
+        {
+            factor = factor * speedUpFactor;
+        }
 
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, transform.position + flyTowards * 500f);
-        c_controller.Move(flyTowards * flySpeed * Time.deltaTime);
+        c_controller.Move(flyTowards * factor);
 
 
     }
@@ -161,13 +170,15 @@ public class DroneController : MonoBehaviour {
     public void StartToSpeedUp()
     {
         speedUp = true;
+        engineAudio.volume = defaultVolume * 3.5f;
+       // audio.PlayOneShot(motorSound);
     }
 
 
-    public void resetSpeedUp()
+    public void StopSpeedUp()
     {
         speedUp = false;
-        speedUpFactor = 1.0f;
+        engineAudio.volume = defaultVolume;
     }
 
     private void MoveToLastCheckPoint()
