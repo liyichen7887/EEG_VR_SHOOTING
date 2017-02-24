@@ -19,20 +19,21 @@ public class DroneController : MonoBehaviour {
     [Header("Hands")]
     public GameObject leftHand;
     public GameObject rightHand;
-
+    [Header("Sounds")]
+    public AudioClip gameEndSound;
     public AudioClip hitSound;
     public AudioClip motorSound;
-    [HideInInspector]
-    public int nextTargetCheckPoint = 8;  //1st checkpoint is where the player is at (1st set of coord in the competition file)
+   // [HideInInspector]
+    public int nextTargetCheckPoint = 2;  //1st checkpoint is where the player is at (1st set of coord in the competition file)
     private CharacterController c_controller;
     private Vector3 flyTowards = Vector3.zero;
     private LeapProvider provider;
 
     private bool useIndexFingerAsDirection = false;
-
+    [Header("UI")]
     public GameObject timerUI;
     public GameObject stopwatch;
-
+    public Text gameEndText;
 
     private AudioSource audio;
 
@@ -49,6 +50,8 @@ public class DroneController : MonoBehaviour {
         c_controller = GetComponent<CharacterController>();
         audio = GetComponent<AudioSource>();
         provider = FindObjectOfType<LeapProvider>() as LeapProvider;
+        gameEndText.enabled = false;
+        nextTargetCheckPoint = 2;
         if (!provider)
             Debug.LogError("Leap Provider not found");
     }
@@ -121,7 +124,10 @@ public class DroneController : MonoBehaviour {
         nextTargetCheckPoint++;
         if(nextTargetCheckPoint > LoadCheckPoints.totalNumCheckPoint)
         {
+            Debug.Log("Game should end");
             // game ending here
+            audio.PlayOneShot(gameEndSound);
+            gameEndText.enabled = true;
             distance.GetComponent<Distance>().gameover = true;
             particle.transform.position = particlePos.position;
             particle.SetActive(true);

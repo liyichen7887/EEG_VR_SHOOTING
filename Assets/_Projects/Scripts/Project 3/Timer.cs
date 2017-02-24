@@ -8,7 +8,10 @@ public class Timer : MonoBehaviour {
     public float timeLeft = 10.00f;
     UnityEngine.UI.Text startCountDown;
     public bool timeElapsed = false;
+
+    public AudioClip fireShotSound;
     private AudioSource beep;
+    
   //  private AudioClip source;
  
     // Use this for initialization
@@ -32,7 +35,9 @@ public class Timer : MonoBehaviour {
         else
         {
             startCountDown.text = "";
+            beep.PlayOneShot(fireShotSound);
             timeHasElapsed();
+            CancelInvoke("CountDown");
         }
     }
 
