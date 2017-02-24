@@ -9,7 +9,8 @@ public class Timer : MonoBehaviour {
     UnityEngine.UI.Text startCountDown;
     public bool timeElapsed = false;
 
-    public AudioClip fireShotSound;
+    public AudioClip startSound;
+    public DroneController dc;
     private AudioSource beep;
     
   //  private AudioClip source;
@@ -34,8 +35,9 @@ public class Timer : MonoBehaviour {
         }
         else
         {
+            dc.canStart = true;
             startCountDown.text = "";
-            beep.PlayOneShot(fireShotSound);
+            beep.PlayOneShot(startSound);
             timeHasElapsed();
             CancelInvoke("CountDown");
         }

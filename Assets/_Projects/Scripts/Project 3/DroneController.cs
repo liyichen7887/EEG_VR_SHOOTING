@@ -23,7 +23,9 @@ public class DroneController : MonoBehaviour {
     public AudioClip gameEndSound;
     public AudioClip hitSound;
     public AudioClip motorSound;
-   // [HideInInspector]
+    private AudioSource audio;
+
+    // [HideInInspector]
     public int nextTargetCheckPoint = 2;  //1st checkpoint is where the player is at (1st set of coord in the competition file)
     private CharacterController c_controller;
     private Vector3 flyTowards = Vector3.zero;
@@ -35,7 +37,12 @@ public class DroneController : MonoBehaviour {
     public GameObject stopwatch;
     public Text gameEndText;
 
-    private AudioSource audio;
+
+    private bool speedUp = false;
+    private float speedUpFactor = 1.0f;
+
+    [HideInInspector]
+    public bool canStart = false;
 
     public static DroneController Instance;
     private void Awake()
@@ -59,7 +66,8 @@ public class DroneController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if(timerUI.GetComponent<Timer>().timeElapsed)
+        if (!canStart) return;
+        //if(timerUI.GetComponent<Timer>().timeElapsed)
             PerformDroneMovement();
 	}
 
@@ -150,6 +158,17 @@ public class DroneController : MonoBehaviour {
 
     }
 
+    public void StartToSpeedUp()
+    {
+        speedUp = true;
+    }
+
+
+    public void resetSpeedUp()
+    {
+        speedUp = false;
+        speedUpFactor = 1.0f;
+    }
 
     private void MoveToLastCheckPoint()
     {
