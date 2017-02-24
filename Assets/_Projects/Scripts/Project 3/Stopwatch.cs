@@ -9,6 +9,7 @@ public class Stopwatch : MonoBehaviour {
     UnityEngine.UI.Text count;
     private GameObject timerUI;
     private Timer timerScript;
+    private bool gameOver = false;
     // Use this for initialization
     void Start () {
         count = GetComponent<Text>();
@@ -20,9 +21,11 @@ public class Stopwatch : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (gameOver) return;
         if (timerScript) {
             if (timerScript.timeElapsed)
             {
+               
                 time += Time.deltaTime;
                 count.text = "" + time;
             }
@@ -30,5 +33,9 @@ public class Stopwatch : MonoBehaviour {
 
             
 
+    }
+
+   public void setGameOver(bool end) {
+        gameOver = end;
     }
 }

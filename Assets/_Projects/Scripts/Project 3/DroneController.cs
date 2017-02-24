@@ -29,6 +29,7 @@ public class DroneController : MonoBehaviour {
     private GameObject particle;
     private GameObject timerUI;
     private Timer timerScript;
+    private Stopwatch stopwatch;
 
     private AudioSource audio;
 
@@ -44,6 +45,7 @@ public class DroneController : MonoBehaviour {
         particle = GameObject.Find("Particle System");
         particle.SetActive(false);
         timerUI = GameObject.Find("CountDown");
+        stopwatch = GameObject.Find("seconds").GetComponent<Stopwatch>();
         timerScript = timerUI.GetComponent<Timer>();
         c_controller = GetComponent<CharacterController>();
         audio = GetComponent<AudioSource>();
@@ -157,8 +159,10 @@ public class DroneController : MonoBehaviour {
         if(nextTargetCheckPoint > LoadCheckPoints.totalNumCheckPoint)
         {
             // game ending here
+
             particle.transform.position = transform.position;
-            particle.SetActive(true); 
+            particle.SetActive(true);
+            stopwatch.setGameOver(true);
         }
     }
 
