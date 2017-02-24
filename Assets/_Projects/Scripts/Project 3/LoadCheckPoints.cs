@@ -27,19 +27,13 @@ public class LoadCheckPoints : MonoBehaviour
         // int[] coord = new int[3];
         char[] spaceDelim = {' '};
         int counter = 0;
-
+        CheckPoint prevCheckPoint = null;
         foreach (string c in coords)
         {
             ++counter;
             xyz = c.Split(spaceDelim);
             Vector3 coord = new Vector3(Int32.Parse(xyz[0])* scale, Int32.Parse(xyz[1]) * scale, Int32.Parse(xyz[2])* scale);
             GameObject go = Instantiate(checkPointPrefab) as GameObject;
-           // GameObject j = Instantiate(checkPointMinMapPrefab) as GameObject;
-          //  GameObject k = Instantiate(checkPointMinMapPrefab) as GameObject;
-           // j.name = "radar #" + counter;
-           // k.name = "border #" + counter;
-           // radarObjects.Add(j);
-           // borderObjects.Add(k);
             go.name = "Checkpoint #" + counter;
             CheckPoint cp = go.GetComponent<CheckPoint>();
             cp.ID = counter;
@@ -47,6 +41,30 @@ public class LoadCheckPoints : MonoBehaviour
             cp.t.text = ""+counter;
             checkPoints.Add(go.transform);
             go.transform.position = coord;
+
+            if(counter == 1)
+            {
+                cp.audS.volume = 0.0f;
+            }
+
+            if (prevCheckPoint)
+            {
+                float offset = 1.0f;
+                Vector3 p = prevCheckPoint.transform.position;
+                p.y -= offset;
+                cp.lr.SetPosition(0, p);
+
+                p = cp.transform.position;
+                p.y -= offset;
+                cp.lr.SetPosition(1, p);
+            }
+            prevCheckPoint = cp;
+            // GameObject j = Instantiate(checkPointMinMapPrefab) as GameObject;
+            //  GameObject k = Instantiate(checkPointMinMapPrefab) as GameObject;
+            // j.name = "radar #" + counter;
+            // k.name = "border #" + counter;
+            // radarObjects.Add(j);
+            // borderObjects.Add(k);
             //j.transform.position = coord;
             //k.transform.position = coord;
 
@@ -56,6 +74,12 @@ public class LoadCheckPoints : MonoBehaviour
         }
         totalNumCheckPoint = checkPoints.Count;
         Player.transform.position = checkPoints[0].position;
+        Vector3 lookPos = checkPoints[1].transform.position - checkPoints[0].transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        Player.transform.rotation = rotation;
+
+
     }
 
     /// <summary>
