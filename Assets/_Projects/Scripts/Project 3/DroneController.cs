@@ -66,6 +66,7 @@ public class DroneController : MonoBehaviour {
         if (useIndexFingerAsDirection)
         {
             Frame frame = provider.CurrentFrame;
+
             foreach (Hand hand in frame.Hands)
             {
                 if (hand.IsRight)
@@ -76,7 +77,6 @@ public class DroneController : MonoBehaviour {
                     Vector d = bone.Direction;    
                     Vector3 center = transform.position;
                     Vector3 direction = new Vector3(d.x, d.y, d.z);
-                    Debug.DrawRay(center, direction * 100f, Color.black);
 
                     flyTowards = direction;
                 }
@@ -86,12 +86,7 @@ public class DroneController : MonoBehaviour {
 
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, transform.position + flyTowards * 500f);
-        c_controller.Move(flyTowards * flySpeed);
-      //  Vector3 currPostion = transform.position;
-     //   transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(currPostion-position), Time.fixedDeltaTime *3.0f);
-      //  Vector3 p = transform.position;
-      //  p += flyTowards * flySpeed;
-      //  transform.position = p;
+        c_controller.Move(flyTowards * flySpeed * Time.deltaTime);
 
 
     }
@@ -100,13 +95,11 @@ public class DroneController : MonoBehaviour {
 
     public void MoveWhereLeftHandisPointingAt()
     {
-       // Debug.Log("Left hand event called");
         state = DroneState.Forward;
     }
 
     public void MoveWhereRightHandisPointingAt()
     {
-      //  Debug.Log("right hand event called");
         state = DroneState.Forward;
         useIndexFingerAsDirection = true;
     }
@@ -119,21 +112,7 @@ public class DroneController : MonoBehaviour {
 
     public void StopMoving()
     {
-       // Debug.Log("Stop  called");
         state = DroneState.Stop;
-    }
-
-    public void FillerEvent1()
-    {
-      //  Debug.Log("Filler Event 1 Called");
-        t.text = "Activated";
-    }
-
-
-    public void FillerEvent2()
-    {
-      //  Debug.Log("Filler Event 2 Called");
-        t.text = "deactivate";
     }
 
     public void CheckPointReached()
