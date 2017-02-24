@@ -10,7 +10,7 @@ public class DroneController : MonoBehaviour {
     public Text t;
     public DroneState state = DroneState.Stop;
     public float flySpeed = 4.0f;
-    
+    public LoadCheckPoints lcp;
     [Header("Line Render")]
     public LineRenderer lr;
     public float lineLength = 100.0f;
@@ -18,8 +18,9 @@ public class DroneController : MonoBehaviour {
     public GameObject leftHand;
     public GameObject rightHand;
 
+    public AudioClip hitSound;
     [HideInInspector]
-    public int nextTargetCheckPoint = 1;
+    public int nextTargetCheckPoint = 2;  //1st checkpoint is where the player is at (1st set of coord in the competition file)
     private CharacterController c_controller;
     private Vector3 flyTowards = Vector3.zero;
     private LeapProvider provider;
@@ -28,11 +29,22 @@ public class DroneController : MonoBehaviour {
 
     private GameObject timerUI;
     private Timer timerScript;
+
+    private AudioSource audio;
+
+    public static DroneController Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+
 	// Use this for initialization
 	void Start () {
         timerUI = GameObject.Find("CountDown");
         timerScript = timerUI.GetComponent<Timer>();
         c_controller = GetComponent<CharacterController>();
+        audio = GetComponent<AudioSource>();
         provider = FindObjectOfType<LeapProvider>() as LeapProvider;
         if (!provider)
             Debug.LogError("Leap Provider not found");
@@ -52,11 +64,11 @@ public class DroneController : MonoBehaviour {
         if (useIndexFingerAsDirection)
         {
             Frame frame = provider.CurrentFrame;
-            if (frame.Hands.Count == 0)
+           /* if (frame.Hands.Count == 0)
             {
                 lr.SetPosition(0, Vector3.zero);
                 lr.SetPosition(1, Vector3.zero);
-            }
+            }*/
 
             foreach (Hand hand in frame.Hands)
             {
@@ -71,21 +83,22 @@ public class DroneController : MonoBehaviour {
                     Vector3 center = transform.position;
                     Vector3 direction = new Vector3(d.x, d.y, d.z);
                     Debug.DrawRay(center, direction * 100f, Color.black);
-                    lr.SetPosition(0, center);
-                    lr.SetPosition(1, center + direction * 500f);
+                 //   lr.SetPosition(0, center);
+                 //   lr.SetPosition(1, center + direction * 500f);
                     flyTowards = direction;
                 }
             }
 
         }
-        else
-        {
-            lr.SetPosition(0, Vector3.zero);
-            lr.SetPosition(1, Vector3.zero);
-        }
+        /*    else
+            {
+                lr.SetPosition(0, Vector3.zero);
+                lr.SetPosition(1, Vector3.zero);
+            }*/
 
-
-          c_controller.Move(flyTowards * flySpeed);
+        lr.SetPosition(0, transform.position);
+        lr.SetPosition(1, transform.position + flyTowards * 500f);
+        c_controller.Move(flyTowards * flySpeed);
       //  Vector3 p = transform.position;
       //  p += flyTowards * flySpeed;
       //  transform.position = p;
@@ -140,6 +153,20 @@ public class DroneController : MonoBehaviour {
         {
             // game ending here
         }
+    }
+
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        string s = hit.transform.name;
+        audio.PlayOneShot(hitSound);
+        MoveToLastCheckPoint();
+    }
+
+
+    private void MoveToLastCheckPoint()
+    {
+        transform.position = lcp.posOfCheckPointNumber(nextTargetCheckPoint - 1);
     }
 
 

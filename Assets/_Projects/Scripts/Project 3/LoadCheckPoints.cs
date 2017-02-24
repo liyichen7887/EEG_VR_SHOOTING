@@ -36,15 +36,26 @@ public class LoadCheckPoints : MonoBehaviour
             CheckPoint cp = go.GetComponent<CheckPoint>();
             cp.ID = counter;
             cp.lcp = this;
+            cp.t.text = ""+counter;
             checkPoints.Add(go.transform);
             go.transform.position = coord;
 
-            GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
+         /*   GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
             sphere.transform.position = coord;
-            sphere.layer = 12;
+            sphere.layer = 12;*/
         }
         totalNumCheckPoint = checkPoints.Count;
         Player.transform.position = checkPoints[0].position;
+    }
+
+    /// <summary>
+    /// return position of checkpoint number n, starting at 1
+    /// </summary>
+    /// <param name="n"></param>
+    /// <returns></returns>
+    public Vector3 posOfCheckPointNumber(int n)
+    {
+        return checkPoints[n - 1].position;
     }
 
 

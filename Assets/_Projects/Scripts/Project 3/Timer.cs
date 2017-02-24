@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour {
 
-    float timeLeft = 10.00f;
+    public float timeLeft = 10.00f;
     UnityEngine.UI.Text startCountDown;
     public bool timeElapsed = false;
  

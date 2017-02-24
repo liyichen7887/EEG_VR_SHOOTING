@@ -9,6 +9,7 @@ public class CheckPoint : MonoBehaviour {
     [HideInInspector]
     public LoadCheckPoints lcp;
 
+    public TextMesh t;
 	// Use this for initialization
 	void Start ()
     {
