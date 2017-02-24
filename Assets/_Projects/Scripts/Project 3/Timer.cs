@@ -8,19 +8,26 @@ public class Timer : MonoBehaviour {
     public float timeLeft = 10.00f;
     UnityEngine.UI.Text startCountDown;
     public bool timeElapsed = false;
+    private AudioSource beep;
+  //  private AudioClip source;
  
     // Use this for initialization
     void Start () {
+        beep = GetComponent<AudioSource>();
         startCountDown = GetComponent<Text>();
         startCountDown.text = "Starting in \n" + timeLeft;
+        InvokeRepeating("CountDown", 1,1);
     }
 	
 	// Update is called once per frame
-	void Update () {
-        if (timeLeft >= 0)
+    
+	void CountDown () {
+        if (timeLeft > 0)
         {
-            timeLeft -= Time.deltaTime;
-            startCountDown.text = "Starting in \n" + ("" + timeLeft).Substring(0,4);
+            beep.Play();
+            timeLeft -= 1.0f;
+            startCountDown.text = "Starting in \n" + ("" + timeLeft);
+
         }
         else
         {
