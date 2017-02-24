@@ -8,12 +8,12 @@ public class CheckPoint : MonoBehaviour {
     public int ID = -1;
     [HideInInspector]
     public LoadCheckPoints lcp;
-
+    public bool cpReached;
     public TextMesh t;
 	// Use this for initialization
 	void Start ()
     {
-		
+        cpReached = false;
 	}
 
 
@@ -24,8 +24,12 @@ public class CheckPoint : MonoBehaviour {
         {
             DroneController dc = other.GetComponent<DroneController>();
             if (dc.nextTargetCheckPoint == ID)
+            {
                 dc.CheckPointReached();
+                cpReached = true;
 
+            }
+          
             
         }
     }

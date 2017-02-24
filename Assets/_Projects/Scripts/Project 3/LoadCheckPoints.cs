@@ -13,6 +13,8 @@ public class LoadCheckPoints : MonoBehaviour
     public GameObject Player;
     private float scale = 0.0254f;
     public List<Transform> checkPoints;
+    public List<GameObject> radarObjects;
+    public List<GameObject> borderObjects;
     public static int totalNumCheckPoint = 0;
     // Use this for initialization
     void Start()
@@ -32,6 +34,12 @@ public class LoadCheckPoints : MonoBehaviour
             xyz = c.Split(spaceDelim);
             Vector3 coord = new Vector3(Int32.Parse(xyz[0])* scale, Int32.Parse(xyz[1]) * scale, Int32.Parse(xyz[2])* scale);
             GameObject go = Instantiate(checkPointPrefab) as GameObject;
+            GameObject j = Instantiate(checkPointMinMapPrefab) as GameObject;
+            GameObject k = Instantiate(checkPointMinMapPrefab) as GameObject;
+            j.name = "radar #" + counter;
+            k.name = "border #" + counter;
+            radarObjects.Add(j);
+            borderObjects.Add(k);
             go.name = "Checkpoint #" + counter;
             CheckPoint cp = go.GetComponent<CheckPoint>();
             cp.ID = counter;
@@ -39,10 +47,12 @@ public class LoadCheckPoints : MonoBehaviour
             cp.t.text = ""+counter;
             checkPoints.Add(go.transform);
             go.transform.position = coord;
+            j.transform.position = coord;
+            k.transform.position = coord;
 
-         /*   GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
-            sphere.transform.position = coord;
-            sphere.layer = 12;*/
+            /*   GameObject sphere = Instantiate(checkPointMinMapPrefab) as GameObject;
+               sphere.transform.position = coord;
+               sphere.layer = 12;*/
         }
         totalNumCheckPoint = checkPoints.Count;
         Player.transform.position = checkPoints[0].position;

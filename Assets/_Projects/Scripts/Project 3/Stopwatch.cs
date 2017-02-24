@@ -14,16 +14,20 @@ public class Stopwatch : MonoBehaviour {
         count = GetComponent<Text>();
         count.text = "" + time + ".00";
         timerUI = GameObject.Find("CountDown");
-        timerScript = timerUI.GetComponent<Timer>();
+        if(timerUI)
+            timerScript = timerUI.GetComponent<Timer>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (timerScript.timeElapsed)
-        {
-            time += Time.deltaTime;
-            count.text = "" + time;
+        if (timerScript) {
+            if (timerScript.timeElapsed)
+            {
+                time += Time.deltaTime;
+                count.text = "" + time;
+            }
         }
+
             
 
     }
