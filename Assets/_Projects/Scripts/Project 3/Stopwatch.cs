@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,17 +14,21 @@ public class Stopwatch : MonoBehaviour {
     void Start () {
         count = GetComponent<Text>();
         count.text = "" + time + ".00";
-
+        InvokeRepeating("startWatch",0.0f,0.001f);
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void startWatch () {
         if (gameOver) return;
             if (timerUI.GetComponent<Timer>().timeElapsed)
             {
                
-                time += Time.deltaTime;
-                count.text = "" + time;
+                time += 0.001f;
+                float truncated = (float)(Math.Truncate((double) time * 100.0) / 100.0);
+                float rounded = (float)(Math.Round((double) time, 2));
+            count.text = ("" + rounded);
+          //  if (count.text.Length > 4)
+                //count.text = count.text.Substring(0, 4);
             }
 
             

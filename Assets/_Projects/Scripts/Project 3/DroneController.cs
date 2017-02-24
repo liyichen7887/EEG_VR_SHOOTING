@@ -21,6 +21,7 @@ public class DroneController : MonoBehaviour {
     public GameObject rightHand;
 
     public AudioClip hitSound;
+    public AudioClip motorSound;
     [HideInInspector]
     public int nextTargetCheckPoint = 8;  //1st checkpoint is where the player is at (1st set of coord in the competition file)
     private CharacterController c_controller;
