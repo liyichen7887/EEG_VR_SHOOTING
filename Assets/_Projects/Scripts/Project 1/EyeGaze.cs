@@ -9,7 +9,7 @@ public class EyeGaze : MonoBehaviour {
 
     public float laserSpeed = 100.0f;
     public float cannonballSpeed = 200.0f;
-    public float TimeRequiredForAction = 3.0f;
+    public float TimeRequiredForAction = 3.0f; //Threshold
     public Text statusText;
 
     public Text raycastResult;
@@ -45,6 +45,10 @@ public class EyeGaze : MonoBehaviour {
     private Vector3 hitPoint;
     private Vector3 cameraDefaultPosition;
 
+    //CSE189 BCI
+    private DisplayData attentionScript;
+    private int attentionValue;
+    public int attentionThreshold;
     // Use this for initialization
     void Start() {
         totalTimeGazed = 0.0f;
@@ -55,6 +59,7 @@ public class EyeGaze : MonoBehaviour {
          camT = Camera.main.transform;
         cannonballs = new List<GameObject>();
         audioS = GetComponent<AudioSource>();
+        attentionScript = GetComponent<DisplayData>();
 
         lastFrameFloorGazed = false;
         currentFrameFloorGazed = false;
@@ -71,7 +76,8 @@ public class EyeGaze : MonoBehaviour {
 
         previousFocus = focusedObject;
         lastFrameFloorGazed = currentFrameFloorGazed;
-
+        attentionValue = attentionScript.getAttention();
+        Debug.Log("attention value: " + attentionValue);
         if (Input.GetKeyDown(KeyCode.S))
         {
              ShootLaser();
@@ -120,13 +126,14 @@ public class EyeGaze : MonoBehaviour {
         {
             totalTimeGazed = 0f;
         }
-        else if (previousFocus != focusedObject)
+        else if (previousFocus != focusedObject || attentionValue < attentionThreshold)
         {
             totalTimeGazed = 0.0f;   //reset timer if focus changed
         }
         else
         {
             totalTimeGazed += Time.deltaTime;
+            //totalTimeGazed = attentionScript.getAttention();
         }
 
 
@@ -159,6 +166,7 @@ public class EyeGaze : MonoBehaviour {
         if (lastFrameFloorGazed && currentFrameFloorGazed)
         {
             timeGazedOnFloor += Time.deltaTime;
+            //timeGazedOnFloor = attentionScript.getAttention();
         }
         else
         {
