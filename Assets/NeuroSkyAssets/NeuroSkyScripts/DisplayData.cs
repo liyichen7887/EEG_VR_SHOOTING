@@ -12,20 +12,20 @@ public class DisplayData : MonoBehaviour
     private int poorSignal1;
     private int attention1;
     private int meditation1;
-	
+    public GameObject neuroSkyController;
 	private float delta;
 
     void Start()
     {
 		
-		controller = GameObject.Find("NeuroSkyTGCController").GetComponent<TGCConnectionController>();
+		controller = neuroSkyController.GetComponent<TGCConnectionController>();
 		
 		controller.UpdatePoorSignalEvent += OnUpdatePoorSignal;
 		controller.UpdateAttentionEvent += OnUpdateAttention;
 		controller.UpdateMeditationEvent += OnUpdateMeditation;
 		
 		controller.UpdateDeltaEvent += OnUpdateDelta;
-		
+        InvokeRepeating("CountDown", 0, 0.1f);
     }
 	
 	void OnUpdatePoorSignal(int value){

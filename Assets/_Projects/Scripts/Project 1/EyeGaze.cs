@@ -5,11 +5,15 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Camera))]
 public class EyeGaze : MonoBehaviour {
 
+    public int mode;
+    public int level;
+    public GameObject displayAttention;
+
     public Transform transformForTP;
 
     public float laserSpeed = 100.0f;
     public float cannonballSpeed = 200.0f;
-    public float TimeRequiredForAction = 3.0f; //Threshold
+    public float TimeRequiredForAction = 2.0f; //Threshold
     public Text statusText;
 
     public Text raycastResult;
@@ -52,6 +56,17 @@ public class EyeGaze : MonoBehaviour {
     public int attentionThreshold;
     // Use this for initialization
     void Start() {
+        level = 1;
+        if (mode == 0)
+        {
+            TimeRequiredForAction = 3.0f;
+            attentionThreshold = 40;
+        }
+        if (mode == 1)
+        {
+            attentionThreshold = 50;
+            TimeRequiredForAction = 2.0f;
+        }
         numOfTargetDestroyed = 0;
         totalTimeGazed = 0.0f;
         timeGazedOnFloor = 0.0f;
@@ -73,8 +88,14 @@ public class EyeGaze : MonoBehaviour {
     void Update() {
         attentionValue = attentionScript.getAttention();
         if (numOfTargetDestroyed >= 5) {
-            attentionThreshold += 10;
+            if (mode == 0)
+                attentionThreshold += 10;
+            else if (mode == 1)
+                TimeRequiredForAction += 1.0f;
             numOfTargetDestroyed = 0;
+            level++;
+            Debug.Log("Final time: " + displayAttention.GetComponent<displayAttention>().time);
+            displayAttention.GetComponent<displayAttention>().time = 0.0f;
         }
         Debug.Log("attention threshold: " + attentionThreshold);
         PerformRaycast();
