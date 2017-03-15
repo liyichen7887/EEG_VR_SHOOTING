@@ -44,6 +44,7 @@ public class EyeGaze : MonoBehaviour {
     private float timeGazedOnFloor;
     private Vector3 hitPoint;
     private Vector3 cameraDefaultPosition;
+    private int numOfTargetDestroyed;
 
     //CSE189 BCI
     private DisplayData attentionScript;
@@ -51,6 +52,7 @@ public class EyeGaze : MonoBehaviour {
     public int attentionThreshold;
     // Use this for initialization
     void Start() {
+        numOfTargetDestroyed = 0;
         totalTimeGazed = 0.0f;
         timeGazedOnFloor = 0.0f;
         cannonIcon.color = defaultColor;
@@ -69,6 +71,12 @@ public class EyeGaze : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        attentionValue = attentionScript.getAttention();
+        if (numOfTargetDestroyed >= 5) {
+            attentionThreshold += 10;
+            numOfTargetDestroyed = 0;
+        }
+        Debug.Log("attention threshold: " + attentionThreshold);
         PerformRaycast();
         CheckFocus();
 
@@ -76,8 +84,8 @@ public class EyeGaze : MonoBehaviour {
 
         previousFocus = focusedObject;
         lastFrameFloorGazed = currentFrameFloorGazed;
-        attentionValue = attentionScript.getAttention();
-        Debug.Log("attention value: " + attentionValue);
+        
+
         if (Input.GetKeyDown(KeyCode.S))
         {
              ShootLaser();
@@ -228,6 +236,7 @@ public class EyeGaze : MonoBehaviour {
         }
         else if (focusedObject.GetType() == typeof(Brick))
         {
+            numOfTargetDestroyed++;
             if (fireMode == FireMode.Laser)
             {
                 ShootLaser();

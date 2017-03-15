@@ -10,6 +10,7 @@ public class Brick : Interactable {
     public int ID;
     public int rowNumber;
     public int positionInRow;
+    public int target;
 
     [HideInInspector]
     public Vector3 defaultPosition;
@@ -23,6 +24,7 @@ public class Brick : Interactable {
 	// Use this for initialization
 	void Start () {
         HitByLaser = false;
+        target = 0;
         r = GetComponent<MeshRenderer>();
         bc = GetComponent<BoxCollider>();
         rb = GetComponent<Rigidbody>();
@@ -34,6 +36,7 @@ public class Brick : Interactable {
 
        this.transform.position = defaultPosition;
        this.transform.rotation = defaultRotation;
+
         if (HitByLaser)
         {
             HitByLaser = false;
